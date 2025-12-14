@@ -1,5 +1,7 @@
 import GlassCard from '@/components/ui/GlassCard';
+import GlassButton from '@/components/ui/GlassButton';
 import Badge from '@/components/ui/Badge';
+import Link from 'next/link';
 
 export default function HomePage() {
   return (
@@ -22,6 +24,19 @@ export default function HomePage() {
             Organisez et administrez plusieurs pays virtuels avec une hiérarchie complète,
             des rôles personnalisables et des outils de gestion dédiés
           </p>
+
+          <div className="flex items-center justify-center gap-4 pt-4">
+            <Link href="/login">
+              <GlassButton variant="primary" className="px-8 py-3">
+                Se connecter
+              </GlassButton>
+            </Link>
+            <Link href="/signup">
+              <GlassButton variant="secondary" className="px-8 py-3">
+                Créer un compte
+              </GlassButton>
+            </Link>
+          </div>
         </div>
 
         <GlassCard strong className="p-10 lg:p-16">
