@@ -16,7 +16,7 @@ export default function HomePage() {
 
           <p className="text-xl lg:text-2xl text-white/70 leading-relaxed max-w-3xl mx-auto">
             Application web complète de gestion multi-pays avec authentification,
-            rôles hiérarchiques et panneau d'administration
+            rôles hiérarchiques et panneau d&apos;administration - Déploiement automatique actif ✅
           </p>
         </div>
 
