@@ -6,7 +6,6 @@ export default function HomePage() {
   return (
     <div className="min-h-screen py-20 px-6">
       <div className="max-w-6xl mx-auto space-y-16">
-        {/* Header */}
         <div className="text-center space-y-6">
           <div className="w-24 h-24 rounded-glass-lg bg-white/10 flex items-center justify-center mx-auto shadow-glow">
             <span className="text-5xl font-bold">NG</span>
@@ -22,7 +21,6 @@ export default function HomePage() {
           </p>
         </div>
 
-        {/* Project Description */}
         <GlassCard strong className="p-8 lg:p-12">
           <h2 className="text-3xl font-bold mb-6 gradient-text">📋 À propos du projet</h2>
           <div className="space-y-4 text-white/70 leading-relaxed">
@@ -39,7 +37,6 @@ export default function HomePage() {
           </div>
         </GlassCard>
 
-        {/* Key Features */}
         <div>
           <h2 className="text-3xl font-bold mb-8 text-center gradient-text">✨ Fonctionnalités principales</h2>
           <div className="grid md:grid-cols-2 gap-6">
@@ -123,7 +120,6 @@ export default function HomePage() {
           </div>
         </div>
 
-        {/* Technical Stack */}
         <GlassCard strong className="p-8 lg:p-12">
           <h2 className="text-3xl font-bold mb-6 gradient-text">🛠️ Technologies</h2>
           <div className="grid md:grid-cols-2 gap-8">
@@ -164,7 +160,6 @@ export default function HomePage() {
           </div>
         </GlassCard>
 
-        {/* Design System */}
         <div>
           <h2 className="text-3xl font-bold mb-8 text-center gradient-text">🎨 Charte graphique</h2>
           <div className="grid md:grid-cols-3 gap-6">
@@ -188,7 +183,6 @@ export default function HomePage() {
           </div>
         </GlassCard>
 
-        {/* Footer Info */}
         <div className="text-center">
           <GlassCard className="inline-block px-8 py-4">
             <div className="flex items-center gap-3">
