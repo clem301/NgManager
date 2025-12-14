@@ -1,6 +1,7 @@
 import React from 'react';
 
 interface GlassInputProps {
+  id?: string;
   label?: string;
   type?: string;
   placeholder?: string;
@@ -13,6 +14,7 @@ interface GlassInputProps {
 }
 
 export default function GlassInput({
+  id,
   label,
   type = 'text',
   placeholder,
@@ -41,6 +43,7 @@ export default function GlassInput({
       )}
       {multiline ? (
         <textarea
+          id={id}
           placeholder={placeholder}
           value={value}
           onChange={onChange}
@@ -50,6 +53,7 @@ export default function GlassInput({
         />
       ) : (
         <input
+          id={id}
           type={type}
           placeholder={placeholder}
           value={value}
