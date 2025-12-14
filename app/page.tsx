@@ -180,7 +180,7 @@ export default function HomePage() {
               <p className="text-white/60 text-sm">Transitions douces et effets glow</p>
             </GlassCard>
           </div>
-        </GlassCard>
+        </div>
 
         <div className="text-center">
           <GlassCard className="inline-block px-8 py-4">
