@@ -17,12 +17,11 @@ export default function HomePage() {
           </h1>
 
           <p className="text-2xl lg:text-3xl text-white/80 leading-relaxed max-w-4xl mx-auto font-light">
-            Logiciel de gestion de pays virtuels
+            Gérez vos pays virtuels comme un pro
           </p>
 
           <p className="text-lg lg:text-xl text-white/60 leading-relaxed max-w-3xl mx-auto">
-            Organisez et administrez plusieurs pays virtuels avec une hiérarchie complète,
-            des rôles personnalisables et des outils de gestion dédiés
+            Parce que diriger un empire virtuel, c&apos;est sérieux 😎
           </p>
 
           <div className="flex items-center justify-center gap-4 pt-4">
@@ -40,67 +39,67 @@ export default function HomePage() {
         </div>
 
         <GlassCard strong className="p-10 lg:p-16">
-          <h2 className="text-4xl font-bold mb-8 text-center gradient-text">Qu&apos;est-ce que NG Manager ?</h2>
+          <h2 className="text-4xl font-bold mb-8 text-center gradient-text">C&apos;est quoi ce truc ?</h2>
           <div className="space-y-6 text-white/70 leading-relaxed text-lg text-center max-w-3xl mx-auto">
             <p>
-              <strong className="text-white">NG Manager</strong> est une plateforme de gestion conçue pour organiser
-              et administrer plusieurs pays virtuels au sein d&apos;une communauté.
+              <strong className="text-white">NG Manager</strong>, c&apos;est ton outil pour gérer ta commu de pays virtuels.
+              Chaque pays a sa team, ses grades, et ses règles. Simple, efficace.
             </p>
             <p>
-              Chaque pays dispose de sa propre hiérarchie, de membres avec des rôles spécifiques,
-              et d&apos;outils de gestion dédiés pour les créations, demandes, historique et communication.
+              Créations, demandes, historique, messagerie... Tout est là pour que tu puisses te concentrer
+              sur l&apos;essentiel : faire vivre ton univers. 🌍
             </p>
           </div>
         </GlassCard>
 
         <div>
-          <h2 className="text-4xl font-bold mb-12 text-center gradient-text">Fonctionnalités principales</h2>
+          <h2 className="text-4xl font-bold mb-12 text-center gradient-text">Ce que tu peux faire</h2>
           <div className="grid md:grid-cols-3 gap-8">
-            <GlassCard className="p-8 text-center">
+            <GlassCard className="p-8 text-center hover:scale-105 transition-transform">
               <div className="text-5xl mb-4">🔐</div>
-              <h3 className="text-xl font-bold mb-3">Authentification</h3>
+              <h3 className="text-xl font-bold mb-3">Sécurité béton</h3>
               <p className="text-white/60 text-sm leading-relaxed">
-                Système sécurisé avec validation manuelle et support 2FA
+                Validation manuelle + 2FA. On rigole pas avec la sécu.
               </p>
             </GlassCard>
 
-            <GlassCard className="p-8 text-center">
+            <GlassCard className="p-8 text-center hover:scale-105 transition-transform">
               <div className="text-5xl mb-4">👥</div>
-              <h3 className="text-xl font-bold mb-3">Rôles hiérarchiques</h3>
+              <h3 className="text-xl font-bold mb-3">Grades custom</h3>
               <p className="text-white/60 text-sm leading-relaxed">
-                Gestion complète des rôles et permissions par pays
+                Crée tes rôles, définis les perms. Ton pays, tes règles.
               </p>
             </GlassCard>
 
-            <GlassCard className="p-8 text-center">
+            <GlassCard className="p-8 text-center hover:scale-105 transition-transform">
               <div className="text-5xl mb-4">✨</div>
-              <h3 className="text-xl font-bold mb-3">Créations</h3>
+              <h3 className="text-xl font-bold mb-3">Système de créations</h3>
               <p className="text-white/60 text-sm leading-relaxed">
-                Soumission et validation de projets et constructions
+                Partage tes projets, valide ceux des autres. Tout simplement.
               </p>
             </GlassCard>
 
-            <GlassCard className="p-8 text-center">
+            <GlassCard className="p-8 text-center hover:scale-105 transition-transform">
               <div className="text-5xl mb-4">📜</div>
-              <h3 className="text-xl font-bold mb-3">Historique</h3>
+              <h3 className="text-xl font-bold mb-3">Historique complet</h3>
               <p className="text-white/60 text-sm leading-relaxed">
-                Traçabilité complète de toutes les actions
+                Tout est tracé. Parce que savoir qui a fait quoi, c&apos;est important.
               </p>
             </GlassCard>
 
-            <GlassCard className="p-8 text-center">
+            <GlassCard className="p-8 text-center hover:scale-105 transition-transform">
               <div className="text-5xl mb-4">💬</div>
-              <h3 className="text-xl font-bold mb-3">Communication</h3>
+              <h3 className="text-xl font-bold mb-3">Messagerie intégrée</h3>
               <p className="text-white/60 text-sm leading-relaxed">
-                Messagerie et forums par pays
+                MP, forums... Tout pour que ta team reste connectée.
               </p>
             </GlassCard>
 
-            <GlassCard className="p-8 text-center">
+            <GlassCard className="p-8 text-center hover:scale-105 transition-transform">
               <div className="text-5xl mb-4">🛡️</div>
-              <h3 className="text-xl font-bold mb-3">Administration</h3>
+              <h3 className="text-xl font-bold mb-3">Panel admin</h3>
               <p className="text-white/60 text-sm leading-relaxed">
-                Panneaux Staff et Propriétaire pour la gestion globale
+                Zone staff + zone proprio. Le contrôle total, quoi.
               </p>
             </GlassCard>
           </div>

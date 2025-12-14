@@ -13,8 +13,8 @@ export default function SignupPage() {
               <span className="text-5xl font-bold">NG</span>
             </div>
           </Link>
-          <h1 className="text-4xl font-bold mb-2 gradient-text">Créer un compte</h1>
-          <p className="text-white/60">Rejoignez NG Manager dès aujourd&apos;hui</p>
+          <h1 className="text-4xl font-bold mb-2 gradient-text">Bienvenue ! 🎉</h1>
+          <p className="text-white/60">Rejoins l&apos;aventure NG Manager</p>
         </div>
 
         <GlassCard className="p-8">
@@ -70,20 +70,20 @@ export default function SignupPage() {
             <div className="flex items-start">
               <input type="checkbox" id="terms" className="mt-1 mr-2" required />
               <label htmlFor="terms" className="text-sm text-white/60">
-                J&apos;accepte les conditions d&apos;utilisation et la politique de confidentialité
+                J&apos;accepte les CGU (ouais, comme tout le monde quoi)
               </label>
             </div>
 
             <GlassButton variant="primary" className="w-full">
-              Créer mon compte
+              C&apos;est parti ! 🚀
             </GlassButton>
           </form>
 
           <div className="mt-6 text-center">
             <p className="text-white/60 text-sm">
-              Vous avez déjà un compte ?{' '}
+              Déjà inscrit ?{' '}
               <Link href="/login" className="text-white font-semibold hover:underline">
-                Se connecter
+                Connecte-toi par ici
               </Link>
             </p>
           </div>

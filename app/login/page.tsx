@@ -13,8 +13,8 @@ export default function LoginPage() {
               <span className="text-5xl font-bold">NG</span>
             </div>
           </Link>
-          <h1 className="text-4xl font-bold mb-2 gradient-text">Connexion</h1>
-          <p className="text-white/60">Connectez-vous à votre compte NG Manager</p>
+          <h1 className="text-4xl font-bold mb-2 gradient-text">Re ! 👋</h1>
+          <p className="text-white/60">Connecte-toi pour gérer ton empire</p>
         </div>
 
         <GlassCard className="p-8">
