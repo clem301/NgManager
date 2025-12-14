@@ -12,7 +12,8 @@ jobs:
     - name: 🔄 Pull latest changes
       run: |
         cd /var/www/ngmanager
-        git pull origin main
+        git fetch origin
+        git reset --hard origin/main
 
     - name: 📦 Install dependencies
       run: |
