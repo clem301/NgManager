@@ -1,7 +1,5 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import Header from "@/components/layout/Header";
-import Sidebar from "@/components/layout/Sidebar";
 
 export const metadata: Metadata = {
   title: "NG Manager - Gestion de Pays",
@@ -16,11 +14,7 @@ export default function RootLayout({
   return (
     <html lang="fr">
       <body>
-        <Header />
-        <Sidebar />
-        <main className="lg:ml-64 pt-20 relative z-10">
-          {children}
-        </main>
+        {children}
       </body>
     </html>
   );
