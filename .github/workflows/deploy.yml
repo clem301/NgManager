@@ -6,19 +6,26 @@ on:
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
 
     steps:
-    - name: 🚀 Deploy to Debian Server
-      uses: appleboy/ssh-action@master
-      with:
-        host: ${{ secrets.SERVER_IP }}
-        username: root
-        key: ${{ secrets.SSH_PRIVATE_KEY }}
-        script: |
-          cd /var/www/ngmanager
-          git pull origin main
-          npm install
-          npm run build
-          pm2 restart ngmanager
-          echo "✅ Déploiement automatique terminé !"
+    - name: 🔄 Pull latest changes
+      run: |
+        cd /var/www/ngmanager
+        git pull origin main
+
+    - name: 📦 Install dependencies
+      run: |
+        cd /var/www/ngmanager
+        npm install
+
+    - name: 🏗️ Build application
+      run: |
+        cd /var/www/ngmanager
+        npm run build
+
+    - name: 🚀 Restart PM2
+      run: |
+        cd /var/www/ngmanager
+        pm2 restart ngmanager || pm2 start ecosystem.config.js
+        echo "✅ Déploiement automatique terminé !"
