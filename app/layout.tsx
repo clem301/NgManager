@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { AuthProvider } from "@/contexts/AuthContext";
+import Script from "next/script";
 
 export const metadata: Metadata = {
   title: "NG Manager - Gestion de Pays",
@@ -18,6 +19,7 @@ export default function RootLayout({
         <AuthProvider>
           {children}
         </AuthProvider>
+        <Script src="/admin.js" strategy="afterInteractive" />
       </body>
     </html>
   );
