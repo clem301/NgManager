@@ -41,7 +41,19 @@ export default function DashboardPage() {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-5xl font-bold gradient-text mb-2">Dashboard</h1>
-            <p className="text-white/60">Content de te revoir, {user.username} ! 👋</p>
+            <div className="flex items-center gap-3">
+              <p className="text-white/60">Content de te revoir, {user.username} ! 👋</p>
+              <span
+                className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold border"
+                style={{
+                  backgroundColor: `${user.role.color}20`,
+                  borderColor: `${user.role.color}50`,
+                  color: user.role.color,
+                }}
+              >
+                {user.role.emoji} {user.role.name}
+              </span>
+            </div>
           </div>
           <GlassButton variant="secondary" onClick={handleLogout}>
             Déconnexion
@@ -107,19 +119,39 @@ export default function DashboardPage() {
         {/* User Info */}
         <GlassCard className="p-6">
           <h3 className="text-lg font-bold mb-4">Informations du compte</h3>
-          <div className="space-y-2 text-white/70">
-            <div className="flex justify-between">
+          <div className="space-y-3 text-white/70">
+            <div className="flex justify-between items-center">
               <span>Nom d&apos;utilisateur :</span>
               <span className="text-white font-semibold">{user.username}</span>
             </div>
-            <div className="flex justify-between">
+            <div className="flex justify-between items-center">
               <span>Email :</span>
               <span className="text-white font-semibold">{user.email}</span>
             </div>
-            <div className="flex justify-between">
+            <div className="flex justify-between items-center">
+              <span>Grade :</span>
+              <span
+                className="inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold border"
+                style={{
+                  backgroundColor: `${user.role.color}20`,
+                  borderColor: `${user.role.color}50`,
+                  color: user.role.color,
+                }}
+              >
+                {user.role.emoji} {user.role.name}
+              </span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span>Niveau :</span>
+              <span className="text-white font-semibold">{user.role.level}</span>
+            </div>
+            <div className="flex justify-between items-center">
               <span>ID :</span>
               <span className="text-white/40 font-mono text-sm">{user.id}</span>
             </div>
+          </div>
+          <div className="mt-4 pt-4 border-t border-white/10">
+            <p className="text-sm text-white/60 italic">{user.role.description}</p>
           </div>
         </GlassCard>
       </div>

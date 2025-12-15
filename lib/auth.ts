@@ -1,8 +1,12 @@
 // Système d'authentification simple avec localStorage
+import { Role, ROLES } from './roles';
+
 export interface User {
   id: string;
   username: string;
   email: string;
+  role: Role;
+  countryId?: string; // ID du pays auquel appartient l'utilisateur
 }
 
 export const AUTH_STORAGE_KEY = 'ng_manager_user';
@@ -14,11 +18,13 @@ export function register(username: string, email: string, password: string): { s
     return { success: false, error: 'Cet email est déjà utilisé' };
   }
 
-  // Créer le nouvel utilisateur
+  // Créer le nouvel utilisateur avec le rôle RECRUE par défaut
   const newUser: User = {
     id: Math.random().toString(36).substr(2, 9),
     username,
     email,
+    role: ROLES.RECRUE, // Nouveau membre = Recrue
+    countryId: undefined,
   };
 
   // Sauvegarder dans localStorage
