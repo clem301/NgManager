@@ -6,6 +6,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import GlassCard from '@/components/ui/GlassCard';
 import GlassButton from '@/components/ui/GlassButton';
 import Badge from '@/components/ui/Badge';
+import { RoleLevel } from '@/lib/roles';
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -98,6 +99,20 @@ export default function DashboardPage() {
         <div>
           <h2 className="text-2xl font-bold mb-6 gradient-text">Actions rapides</h2>
           <div className="grid md:grid-cols-2 gap-6">
+            {/* Accès admin pour Fondateur et Staff */}
+            {user.role.level >= RoleLevel.STAFF && (
+              <GlassCard
+                className="p-6 hover:scale-105 transition-transform cursor-pointer"
+                onClick={() => router.push('/admin')}
+              >
+                <div className="text-4xl mb-4">🛡️</div>
+                <h3 className="text-xl font-bold mb-2">Administration</h3>
+                <p className="text-white/60 text-sm">
+                  Gérer les utilisateurs et les rôles
+                </p>
+              </GlassCard>
+            )}
+
             <GlassCard className="p-6 hover:scale-105 transition-transform cursor-pointer">
               <div className="text-4xl mb-4">➕</div>
               <h3 className="text-xl font-bold mb-2">Créer un pays</h3>
