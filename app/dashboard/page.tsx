@@ -101,16 +101,15 @@ export default function DashboardPage() {
           <div className="grid md:grid-cols-2 gap-6">
             {/* Accès admin pour Fondateur et Staff */}
             {user.role.level >= RoleLevel.STAFF && (
-              <GlassCard
-                className="p-6 hover:scale-105 transition-transform cursor-pointer"
-                onClick={() => router.push('/admin')}
-              >
-                <div className="text-4xl mb-4">🛡️</div>
-                <h3 className="text-xl font-bold mb-2">Administration</h3>
-                <p className="text-white/60 text-sm">
-                  Gérer les utilisateurs et les rôles
-                </p>
-              </GlassCard>
+              <div onClick={() => router.push('/admin')}>
+                <GlassCard className="p-6 hover:scale-105 transition-transform cursor-pointer">
+                  <div className="text-4xl mb-4">🛡️</div>
+                  <h3 className="text-xl font-bold mb-2">Administration</h3>
+                  <p className="text-white/60 text-sm">
+                    Gérer les utilisateurs et les rôles
+                  </p>
+                </GlassCard>
+              </div>
             )}
 
             <GlassCard className="p-6 hover:scale-105 transition-transform cursor-pointer">
