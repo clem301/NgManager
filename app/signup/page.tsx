@@ -19,7 +19,7 @@ export default function SignupPage() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setError('');
 
@@ -35,11 +35,11 @@ export default function SignupPage() {
 
     setLoading(true);
 
-    const result = register(username, email, password);
+    const result = await register(username, email, password);
 
     if (result.success) {
       // Auto-login après inscription
-      const loginResult = login(email, password);
+      const loginResult = await login(email, password);
       if (loginResult.success && loginResult.user) {
         setUser(loginResult.user);
         router.push('/dashboard');

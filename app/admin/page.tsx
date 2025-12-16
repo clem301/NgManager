@@ -3,7 +3,7 @@
 import { useAuth } from '@/contexts/AuthContext';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { User } from '@/lib/auth';
+import { User, getAllUsers, updateUserRole } from '@/lib/auth';
 import { ROLES, Role, RoleLevel } from '@/lib/roles';
 
 export default function AdminPage() {
@@ -29,34 +29,25 @@ export default function AdminPage() {
     setLoading(false);
   }, [user, router]);
 
-  const loadUsers = () => {
-    const allUsers = JSON.parse(localStorage.getItem('ng_manager_users') || '[]');
+  const loadUsers = async () => {
+    const allUsers = await getAllUsers();
     setUsers(allUsers);
   };
 
-  const promoteUser = (targetUser: User, newRole: Role) => {
+  const promoteUser = async (targetUser: User, newRole: Role) => {
     // Seulement les Fondateurs peuvent promouvoir d'autres Fondateurs
     if (newRole.level === RoleLevel.FONDATEUR && user?.role.level !== RoleLevel.FONDATEUR) {
       alert('Seuls les Fondateurs peuvent promouvoir d\'autres Fondateurs');
       return;
     }
 
-    const allUsers = JSON.parse(localStorage.getItem('ng_manager_users') || '[]');
-    const userIndex = allUsers.findIndex((u: User) => u.id === targetUser.id);
+    const result = await updateUserRole(targetUser.id, newRole);
 
-    if (userIndex !== -1) {
-      allUsers[userIndex].role = newRole;
-      localStorage.setItem('ng_manager_users', JSON.stringify(allUsers));
-
-      // Mettre à jour la session si c'est l'utilisateur connecté
-      const currentUser = JSON.parse(localStorage.getItem('ng_manager_user') || 'null');
-      if (currentUser && currentUser.id === targetUser.id) {
-        currentUser.role = newRole;
-        localStorage.setItem('ng_manager_user', JSON.stringify(currentUser));
-      }
-
+    if (result.success) {
       loadUsers();
       alert(`✅ ${targetUser.username} est maintenant ${newRole.emoji} ${newRole.name}`);
+    } else {
+      alert(`❌ Erreur: ${result.error}`);
     }
   };
 

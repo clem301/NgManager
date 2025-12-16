@@ -10,7 +10,8 @@
       "Bash(git push:*)",
       "Bash(ssh ngmanager \"ssh-keygen -t rsa -b 4096 -f ~/.ssh/id_rsa -N '''' -C ''github-actions''\")",
       "Bash(sudo journalctl:*)",
-      "Bash(ssh ngmanager \"su - github-runner -c ''ls -la ~''\")"
+      "Bash(ssh ngmanager \"su - github-runner -c ''ls -la ~''\")",
+      "Bash(npm install:*)"
     ],
     "deny": [],
     "ask": []

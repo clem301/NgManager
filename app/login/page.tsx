@@ -17,12 +17,12 @@ export default function LoginPage() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setError('');
     setLoading(true);
 
-    const result = login(email, password);
+    const result = await login(email, password);
 
     if (result.success && result.user) {
       setUser(result.user);
