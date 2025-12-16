@@ -112,21 +112,25 @@ export default function DashboardPage() {
               </div>
             )}
 
-            <GlassCard className="p-6 hover:scale-105 transition-transform cursor-pointer">
-              <div className="text-4xl mb-4">➕</div>
-              <h3 className="text-xl font-bold mb-2">Créer un pays</h3>
-              <p className="text-white/60 text-sm">
-                Lance-toi et crée ton premier pays virtuel
-              </p>
-            </GlassCard>
+            <div onClick={() => router.push('/countries/create')}>
+              <GlassCard className="p-6 hover:scale-105 transition-transform cursor-pointer">
+                <div className="text-4xl mb-4">➕</div>
+                <h3 className="text-xl font-bold mb-2">Créer un pays</h3>
+                <p className="text-white/60 text-sm">
+                  Lance-toi et crée ton premier pays virtuel
+                </p>
+              </GlassCard>
+            </div>
 
-            <GlassCard className="p-6 hover:scale-105 transition-transform cursor-pointer">
-              <div className="text-4xl mb-4">🔍</div>
-              <h3 className="text-xl font-bold mb-2">Rejoindre un pays</h3>
-              <p className="text-white/60 text-sm">
-                Trouve un pays existant et fais ta demande
-              </p>
-            </GlassCard>
+            <div onClick={() => router.push('/countries')}>
+              <GlassCard className="p-6 hover:scale-105 transition-transform cursor-pointer">
+                <div className="text-4xl mb-4">🔍</div>
+                <h3 className="text-xl font-bold mb-2">Rejoindre un pays</h3>
+                <p className="text-white/60 text-sm">
+                  Trouve un pays existant et fais ta demande
+                </p>
+              </GlassCard>
+            </div>
           </div>
         </div>
 

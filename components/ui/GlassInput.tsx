@@ -11,6 +11,7 @@ interface GlassInputProps {
   required?: boolean;
   multiline?: boolean;
   rows?: number;
+  maxLength?: number;
 }
 
 export default function GlassInput({
@@ -24,6 +25,7 @@ export default function GlassInput({
   required = false,
   multiline = false,
   rows = 4,
+  maxLength,
 }: GlassInputProps) {
   const inputClasses = `
     glass w-full px-4 py-3 rounded-glass
@@ -59,6 +61,7 @@ export default function GlassInput({
           value={value}
           onChange={onChange}
           required={required}
+          maxLength={maxLength}
           className={inputClasses}
         />
       )}
