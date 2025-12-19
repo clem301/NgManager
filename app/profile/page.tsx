@@ -38,6 +38,15 @@ export default function ProfilePage() {
   return (
     <div className="min-h-screen py-20 px-6">
       <div className="max-w-6xl mx-auto space-y-8">
+        {/* Bouton retour */}
+        <button
+          onClick={() => router.push('/dashboard')}
+          className="flex items-center gap-2 text-white/60 hover:text-white transition-colors mb-4"
+        >
+          <span>←</span>
+          <span>Retour au pays</span>
+        </button>
+
         {/* Header avec glassmorphisme */}
         <GlassCard className="p-8">
           <div className="flex items-center justify-between">
