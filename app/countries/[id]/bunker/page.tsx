@@ -239,10 +239,9 @@ export default function CountryBunkerPage() {
                   }}
                   onMouseDown={(e) => {
                     if (e.button === 0) { // Clic gauche uniquement
-                      const rect = e.currentTarget.getBoundingClientRect();
                       setDragOffset({
-                        x: e.clientX - rect.left - 35,
-                        y: e.clientY - rect.top - 35
+                        x: 35,
+                        y: 35
                       });
                       setDraggingBunker(bunker);
                     }

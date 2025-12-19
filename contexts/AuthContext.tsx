@@ -18,20 +18,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Charger l'utilisateur au montage et rafraîchir son rôle depuis Supabase
-    const loadUser = async () => {
-      const currentUser = getCurrentUser();
-      if (currentUser) {
-        // Rafraîchir le rôle depuis Supabase
-        const updatedUser = await refreshUserRole(currentUser.id);
-        setUser(updatedUser || currentUser);
-      } else {
-        setUser(null);
-      }
-      setLoading(false);
-    };
-
-    loadUser();
+    // Charger l'utilisateur depuis localStorage uniquement
+    const currentUser = getCurrentUser();
+    setUser(currentUser);
+    setLoading(false);
   }, []);
 
   const login = (user: User) => {
