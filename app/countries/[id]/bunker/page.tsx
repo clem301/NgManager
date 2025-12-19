@@ -5,10 +5,9 @@ import { useRouter, useParams } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import GlassCard from '@/components/ui/GlassCard';
 import GlassButton from '@/components/ui/GlassButton';
+import GlassInput from '@/components/ui/GlassInput';
 import { getCountryById } from '@/lib/countries';
 import { getCountryBunkers, createBunker, updateBunker, deleteBunker, Bunker, BunkerStatus } from '@/lib/bunkers';
-
-const GRID_SIZE = 20; // 20x20 grille
 
 export default function CountryBunkerPage() {
   const router = useRouter();
@@ -19,7 +18,7 @@ export default function CountryBunkerPage() {
   const [loading, setLoading] = useState(true);
   const [selectedBunker, setSelectedBunker] = useState<Bunker | null>(null);
   const [showAddModal, setShowAddModal] = useState(false);
-  const [newBunkerPos, setNewBunkerPos] = useState({ x: 0, y: 0 });
+  const [newBunker, setNewBunker] = useState({ x: 0, y: 0, name: '', status: 'vacant' as BunkerStatus });
 
   useEffect(() => {
     if (!user) {
@@ -43,41 +42,33 @@ export default function CountryBunkerPage() {
     setLoading(false);
   };
 
-  const getBunkerAt = (x: number, y: number) => {
-    return bunkers.find(b => b.x === x && b.y === y);
-  };
-
-  const handleCellClick = (x: number, y: number) => {
-    const bunker = getBunkerAt(x, y);
-    if (bunker) {
-      setSelectedBunker(bunker);
-    } else {
-      setNewBunkerPos({ x, y });
-      setShowAddModal(true);
+  const handleAddBunker = async () => {
+    if (!newBunker.name.trim()) {
+      alert('Le nom du bunker est requis');
+      return;
     }
-  };
 
-  const handleAddBunker = async (status: BunkerStatus, name?: string) => {
     const result = await createBunker(
       params.id as string,
-      newBunkerPos.x,
-      newBunkerPos.y,
-      status,
-      name
+      newBunker.x,
+      newBunker.y,
+      newBunker.status,
+      newBunker.name
     );
 
     if (result.success) {
       loadData();
       setShowAddModal(false);
+      setNewBunker({ x: 0, y: 0, name: '', status: 'vacant' });
     } else {
       alert(result.error);
     }
   };
 
-  const handleUpdateBunker = async (status: BunkerStatus, name?: string) => {
+  const handleUpdateBunker = async (status: BunkerStatus) => {
     if (!selectedBunker) return;
 
-    const result = await updateBunker(selectedBunker.id, { status, name });
+    const result = await updateBunker(selectedBunker.id, { status });
 
     if (result.success) {
       loadData();
@@ -89,6 +80,8 @@ export default function CountryBunkerPage() {
 
   const handleDeleteBunker = async () => {
     if (!selectedBunker) return;
+
+    if (!confirm('Supprimer ce bunker ?')) return;
 
     const result = await deleteBunker(selectedBunker.id);
 
@@ -132,12 +125,23 @@ export default function CountryBunkerPage() {
     );
   }
 
+  // Calculer les limites du canvas
+  const minX = bunkers.length > 0 ? Math.min(...bunkers.map(b => b.x), 0) - 2 : -2;
+  const maxX = bunkers.length > 0 ? Math.max(...bunkers.map(b => b.x), 20) + 2 : 22;
+  const minY = bunkers.length > 0 ? Math.min(...bunkers.map(b => b.y), 0) - 2 : -2;
+  const maxY = bunkers.length > 0 ? Math.max(...bunkers.map(b => b.y), 20) + 2 : 22;
+
   return (
     <div className="flex-1 p-8">
       <div className="max-w-7xl mx-auto space-y-6">
-        <div>
-          <h1 className="text-4xl font-bold text-white mb-2">Bunker</h1>
-          <p className="text-white/60">Gestion des bunkers de {country.name}</p>
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-4xl font-bold text-white mb-2">Bunker</h1>
+            <p className="text-white/60">Construction des couloirs de {country.name}</p>
+          </div>
+          <GlassButton variant="primary" onClick={() => setShowAddModal(true)}>
+            + Ajouter un bunker
+          </GlassButton>
         </div>
 
         {/* Stats */}
@@ -156,45 +160,43 @@ export default function CountryBunkerPage() {
           </GlassCard>
         </div>
 
-        {/* Grille interactive */}
+        {/* Canvas libre */}
         <GlassCard className="p-6">
-          <h2 className="text-xl font-bold text-white mb-4">Carte des bunkers</h2>
-          <div className="overflow-auto">
-            <div
-              className="inline-grid gap-1"
-              style={{
-                gridTemplateColumns: `repeat(${GRID_SIZE}, minmax(0, 1fr))`,
-              }}
-            >
-              {Array.from({ length: GRID_SIZE * GRID_SIZE }).map((_, index) => {
-                const x = index % GRID_SIZE;
-                const y = Math.floor(index / GRID_SIZE);
-                const bunker = getBunkerAt(x, y);
+          <h2 className="text-xl font-bold text-white mb-4">Plan des couloirs</h2>
+          <div className="overflow-auto bg-black/20 p-8 rounded-lg" style={{ minHeight: '600px' }}>
+            <div className="relative" style={{
+              width: `${(maxX - minX) * 80}px`,
+              height: `${(maxY - minY) * 80}px`,
+              minWidth: '1000px',
+              minHeight: '600px'
+            }}>
+              {/* Grille de fond */}
+              <div className="absolute inset-0" style={{
+                backgroundImage: 'linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px)',
+                backgroundSize: '40px 40px'
+              }} />
 
-                return (
-                  <button
-                    key={`${x}-${y}`}
-                    onClick={() => handleCellClick(x, y)}
-                    className="w-8 h-8 border border-white/10 hover:border-white/30 transition-all relative group"
-                    style={{
-                      backgroundColor: bunker ? `${getStatusColor(bunker.status)}30` : 'rgba(255,255,255,0.02)',
-                    }}
-                    title={bunker ? `(${x},${y}) - ${getStatusText(bunker.status)}${bunker.name ? ` - ${bunker.name}` : ''}` : `(${x},${y})`}
-                  >
-                    {bunker && (
-                      <div
-                        className="absolute inset-0 flex items-center justify-center"
-                        style={{ color: getStatusColor(bunker.status) }}
-                      >
-                        <div className="w-2 h-2 rounded-full" style={{ backgroundColor: getStatusColor(bunker.status) }} />
-                      </div>
-                    )}
-                    <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-black/90 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-10">
-                      ({x},{y})
-                    </div>
-                  </button>
-                );
-              })}
+              {/* Bunkers */}
+              {bunkers.map((bunker) => (
+                <button
+                  key={bunker.id}
+                  onClick={() => setSelectedBunker(bunker)}
+                  className="absolute flex flex-col items-center justify-center p-3 rounded-lg border-2 transition-all hover:scale-110 hover:z-10 cursor-pointer"
+                  style={{
+                    left: `${(bunker.x - minX) * 80}px`,
+                    top: `${(bunker.y - minY) * 80}px`,
+                    width: '70px',
+                    height: '70px',
+                    backgroundColor: `${getStatusColor(bunker.status)}40`,
+                    borderColor: getStatusColor(bunker.status),
+                    boxShadow: `0 0 20px ${getStatusColor(bunker.status)}30`,
+                  }}
+                >
+                  <div className="text-xs text-white/60 font-mono">({bunker.x},{bunker.y})</div>
+                  <div className="text-xs text-white font-semibold truncate w-full text-center mt-1">{bunker.name}</div>
+                  <div className="w-2 h-2 rounded-full mt-1" style={{ backgroundColor: getStatusColor(bunker.status) }} />
+                </button>
+              ))}
             </div>
           </div>
         </GlassCard>
@@ -203,115 +205,163 @@ export default function CountryBunkerPage() {
         <GlassCard className="p-4">
           <div className="flex items-center gap-6">
             <div className="flex items-center gap-2">
-              <div className="w-4 h-4 rounded" style={{ backgroundColor: `${getStatusColor('vacant')}50` }} />
+              <div className="w-4 h-4 rounded" style={{ backgroundColor: getStatusColor('vacant') }} />
               <span className="text-sm text-white/60">Vacant</span>
             </div>
             <div className="flex items-center gap-2">
-              <div className="w-4 h-4 rounded" style={{ backgroundColor: `${getStatusColor('paid')}50` }} />
+              <div className="w-4 h-4 rounded" style={{ backgroundColor: getStatusColor('paid') }} />
               <span className="text-sm text-white/60">Payé</span>
             </div>
             <div className="flex items-center gap-2">
-              <div className="w-4 h-4 rounded" style={{ backgroundColor: `${getStatusColor('occupied')}50` }} />
+              <div className="w-4 h-4 rounded" style={{ backgroundColor: getStatusColor('occupied') }} />
               <span className="text-sm text-white/60">Occupé</span>
             </div>
           </div>
         </GlassCard>
+
+        {/* Liste des bunkers */}
+        <GlassCard className="p-6">
+          <h2 className="text-xl font-bold text-white mb-4">Liste des bunkers ({bunkers.length})</h2>
+          <div className="space-y-2 max-h-96 overflow-auto">
+            {bunkers.length === 0 ? (
+              <div className="text-center text-white/60 py-8">
+                Aucun bunker. Commence à construire ton couloir!
+              </div>
+            ) : (
+              bunkers.map((bunker) => (
+                <button
+                  key={bunker.id}
+                  onClick={() => setSelectedBunker(bunker)}
+                  className="w-full glass-card p-4 flex items-center justify-between hover:bg-white/5 transition-all"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-3 h-3 rounded-full" style={{ backgroundColor: getStatusColor(bunker.status) }} />
+                    <div className="text-left">
+                      <div className="text-white font-semibold">{bunker.name}</div>
+                      <div className="text-white/60 text-sm">({bunker.x}, {bunker.y})</div>
+                    </div>
+                  </div>
+                  <div className="text-sm font-semibold" style={{ color: getStatusColor(bunker.status) }}>
+                    {getStatusText(bunker.status)}
+                  </div>
+                </button>
+              ))
+            )}
+          </div>
+        </GlassCard>
       </div>
 
-      {/* Modal ajout bunker */}
+      {/* Modal ajout */}
       {showAddModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50" onClick={() => setShowAddModal(false)}>
           <div onClick={e => e.stopPropagation()}>
             <GlassCard className="p-6 max-w-md w-full m-4">
-              <h3 className="text-xl font-bold text-white mb-4">
-                Ajouter un bunker ({newBunkerPos.x}, {newBunkerPos.y})
-              </h3>
-              <div className="space-y-3">
-                <GlassButton
-                  variant="secondary"
-                  onClick={() => handleAddBunker('vacant')}
-                  className="w-full"
-                >
-                  Vacant
-                </GlassButton>
-                <GlassButton
-                  variant="primary"
-                  onClick={() => handleAddBunker('paid', `BK-${newBunkerPos.x}-${newBunkerPos.y}`)}
-                  className="w-full"
-                >
-                  Payé
-                </GlassButton>
-                <GlassButton
-                  variant="primary"
-                  onClick={() => handleAddBunker('occupied', `BK-${newBunkerPos.x}-${newBunkerPos.y}`)}
-                  className="w-full"
-                >
-                  Occupé
-                </GlassButton>
+              <h3 className="text-xl font-bold text-white mb-4">Nouveau bunker</h3>
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm text-white/60 mb-2">Nom</label>
+                  <GlassInput
+                    value={newBunker.name}
+                    onChange={(e) => setNewBunker({ ...newBunker, name: e.target.value })}
+                    placeholder="Ex: BK-A1, Couloir Nord..."
+                  />
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm text-white/60 mb-2">X</label>
+                    <GlassInput
+                      type="number"
+                      value={newBunker.x}
+                      onChange={(e) => setNewBunker({ ...newBunker, x: parseInt(e.target.value) || 0 })}
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm text-white/60 mb-2">Y</label>
+                    <GlassInput
+                      type="number"
+                      value={newBunker.y}
+                      onChange={(e) => setNewBunker({ ...newBunker, y: parseInt(e.target.value) || 0 })}
+                    />
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-sm text-white/60 mb-2">Statut</label>
+                  <div className="grid grid-cols-3 gap-2">
+                    {(['vacant', 'paid', 'occupied'] as BunkerStatus[]).map((status) => (
+                      <button
+                        key={status}
+                        onClick={() => setNewBunker({ ...newBunker, status })}
+                        className={`p-3 rounded-lg border-2 transition-all ${
+                          newBunker.status === status
+                            ? `border-2`
+                            : 'border-white/10 hover:border-white/30'
+                        }`}
+                        style={{
+                          borderColor: newBunker.status === status ? getStatusColor(status) : undefined,
+                          backgroundColor: newBunker.status === status ? `${getStatusColor(status)}20` : undefined,
+                        }}
+                      >
+                        <div className="text-sm text-white">{getStatusText(status)}</div>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                <div className="flex gap-2 pt-2">
+                  <GlassButton variant="secondary" onClick={() => setShowAddModal(false)} className="flex-1">
+                    Annuler
+                  </GlassButton>
+                  <GlassButton variant="primary" onClick={handleAddBunker} className="flex-1">
+                    Créer
+                  </GlassButton>
+                </div>
               </div>
             </GlassCard>
           </div>
         </div>
       )}
 
-      {/* Modal détails bunker */}
+      {/* Modal détails */}
       {selectedBunker && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50" onClick={() => setSelectedBunker(null)}>
           <div onClick={e => e.stopPropagation()}>
             <GlassCard className="p-6 max-w-md w-full m-4">
-            <h3 className="text-xl font-bold text-white mb-4">
-              Bunker ({selectedBunker.x}, {selectedBunker.y})
-            </h3>
-            <div className="space-y-4">
-              <div>
-                <div className="text-sm text-white/60">Statut</div>
-                <div className="text-white font-semibold" style={{ color: getStatusColor(selectedBunker.status) }}>
-                  {getStatusText(selectedBunker.status)}
-                </div>
-              </div>
-              {selectedBunker.name && (
+              <h3 className="text-xl font-bold text-white mb-4">{selectedBunker.name}</h3>
+              <div className="space-y-4">
                 <div>
-                  <div className="text-sm text-white/60">Nom</div>
-                  <div className="text-white">{selectedBunker.name}</div>
+                  <div className="text-sm text-white/60">Position</div>
+                  <div className="text-white font-mono">({selectedBunker.x}, {selectedBunker.y})</div>
                 </div>
-              )}
-              {selectedBunker.occupant && (
                 <div>
-                  <div className="text-sm text-white/60">Occupant</div>
-                  <div className="text-white">{selectedBunker.occupant.username}</div>
+                  <div className="text-sm text-white/60">Statut</div>
+                  <div className="font-semibold" style={{ color: getStatusColor(selectedBunker.status) }}>
+                    {getStatusText(selectedBunker.status)}
+                  </div>
                 </div>
-              )}
-              <div className="flex gap-2">
-                <GlassButton
-                  variant="secondary"
-                  onClick={() => handleUpdateBunker('vacant')}
-                  className="flex-1"
-                >
-                  Vacant
-                </GlassButton>
-                <GlassButton
-                  variant="primary"
-                  onClick={() => handleUpdateBunker('paid', selectedBunker.name)}
-                  className="flex-1"
-                >
-                  Payé
-                </GlassButton>
-                <GlassButton
-                  variant="primary"
-                  onClick={() => handleUpdateBunker('occupied', selectedBunker.name)}
-                  className="flex-1"
-                >
-                  Occupé
+                {selectedBunker.occupant && (
+                  <div>
+                    <div className="text-sm text-white/60">Occupant</div>
+                    <div className="text-white">{selectedBunker.occupant.username}</div>
+                  </div>
+                )}
+                <div>
+                  <div className="text-sm text-white/60 mb-2">Changer le statut</div>
+                  <div className="grid grid-cols-3 gap-2">
+                    {(['vacant', 'paid', 'occupied'] as BunkerStatus[]).map((status) => (
+                      <GlassButton
+                        key={status}
+                        variant={status === selectedBunker.status ? 'primary' : 'secondary'}
+                        onClick={() => handleUpdateBunker(status)}
+                        className="text-sm"
+                      >
+                        {getStatusText(status)}
+                      </GlassButton>
+                    ))}
+                  </div>
+                </div>
+                <GlassButton variant="secondary" onClick={handleDeleteBunker} className="w-full">
+                  Supprimer
                 </GlassButton>
               </div>
-              <GlassButton
-                variant="secondary"
-                onClick={handleDeleteBunker}
-                className="w-full"
-              >
-                Supprimer
-              </GlassButton>
-            </div>
             </GlassCard>
           </div>
         </div>
