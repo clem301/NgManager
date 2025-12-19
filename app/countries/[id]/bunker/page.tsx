@@ -4,15 +4,14 @@ import { useEffect, useState } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import GlassCard from '@/components/ui/GlassCard';
-import { getCountryById, getCountryMembers, getUserCountries, CountryWithOwner } from '@/lib/countries';
+import { getCountryById, getUserCountries, CountryWithOwner } from '@/lib/countries';
 import { RoleLevel } from '@/lib/roles';
 
-export default function CountryPage() {
+export default function CountryBunkerPage() {
   const router = useRouter();
   const params = useParams();
   const { user } = useAuth();
   const [country, setCountry] = useState<CountryWithOwner | null>(null);
-  const [members, setMembers] = useState<any[]>([]);
   const [userCountries, setUserCountries] = useState<CountryWithOwner[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -28,14 +27,12 @@ export default function CountryPage() {
   const loadCountryData = async () => {
     if (!user || !params.id) return;
 
-    const [countryData, membersData, userCountriesData] = await Promise.all([
+    const [countryData, userCountriesData] = await Promise.all([
       getCountryById(params.id as string),
-      getCountryMembers(params.id as string),
       getUserCountries(user.id),
     ]);
 
     setCountry(countryData);
-    setMembers(membersData);
     setUserCountries(userCountriesData);
     setLoading(false);
   };
@@ -55,8 +52,6 @@ export default function CountryPage() {
       </div>
     );
   }
-
-  const isMember = members.some(m => m.user_id === user?.id);
 
   return (
     <div className="min-h-screen flex">
@@ -110,8 +105,14 @@ export default function CountryPage() {
                     {c.id === country.id && (
                       <div className="ml-4 space-y-1">
                         <button
-                          onClick={() => router.push(`/countries/${c.id}/bunker`)}
+                          onClick={() => router.push(`/countries/${c.id}`)}
                           className="w-full text-left px-4 py-1.5 rounded-lg text-white/60 hover:text-white hover:bg-white/5 transition-all text-sm"
+                        >
+                          Accueil
+                        </button>
+                        <button
+                          onClick={() => router.push(`/countries/${c.id}/bunker`)}
+                          className="w-full text-left px-4 py-1.5 rounded-lg bg-white/10 text-white transition-all text-sm"
                         >
                           BK
                         </button>
@@ -144,7 +145,7 @@ export default function CountryPage() {
                 </button>
                 <button
                   onClick={() => router.push(`/countries/${country.id}/bunker`)}
-                  className="w-full text-left px-4 py-2 rounded-lg text-white/60 hover:text-white hover:bg-white/5 transition-all"
+                  className="w-full text-left px-4 py-2 rounded-lg bg-white/10 text-white transition-all"
                 >
                   BK
                 </button>
@@ -157,61 +158,13 @@ export default function CountryPage() {
       {/* Main content */}
       <div className="flex-1 p-8">
         <div className="max-w-6xl mx-auto space-y-8">
-          {/* Header */}
-          <div
-            className="p-8 rounded-glass border-2"
-            style={{
-              backgroundColor: `${country.color}10`,
-              borderColor: `${country.color}50`,
-            }}
-          >
-            <div className="flex items-center gap-4 mb-4">
-              <span className="text-6xl">{country.flag_emoji}</span>
-              <div>
-                <h1 className="text-4xl font-bold text-white">{country.name}</h1>
-                <p className="text-white/60">Fondé par {country.owner?.username}</p>
-              </div>
-            </div>
-            {country.description && (
-              <p className="text-white/70 mt-4">{country.description}</p>
-            )}
+          <div>
+            <h1 className="text-4xl font-bold text-white mb-2">Bunker</h1>
+            <p className="text-white/60">Gestion des bunkers de {country.name}</p>
           </div>
 
-          {/* Members */}
-          <GlassCard className="p-6">
-            <h2 className="text-2xl font-bold text-white mb-6">
-              Membres ({members.length})
-            </h2>
-            <div className="space-y-3">
-              {members.map((member) => (
-                <div
-                  key={member.id}
-                  className="glass-card p-4 flex items-center justify-between"
-                >
-                  <div>
-                    <div className="text-white font-semibold">
-                      {member.user?.username}
-                    </div>
-                    <div className="text-white/60 text-sm">{member.user?.email}</div>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span
-                      className="px-3 py-1 rounded-full text-xs font-semibold"
-                      style={{
-                        backgroundColor: `${member.user?.role_color}20`,
-                        color: member.user?.role_color,
-                        border: `1px solid ${member.user?.role_color}50`,
-                      }}
-                    >
-                      {member.user?.role_name}
-                    </span>
-                    <span className="text-white/40 text-xs">
-                      {member.country_role}
-                    </span>
-                  </div>
-                </div>
-              ))}
-            </div>
+          <GlassCard className="p-8 text-center">
+            <div className="text-white/60">Page BK en construction</div>
           </GlassCard>
         </div>
       </div>
