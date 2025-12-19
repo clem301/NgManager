@@ -14,16 +14,20 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
+  // Charger immédiatement depuis localStorage pour éviter le flash
+  const [user, setUser] = useState<User | null>(() => {
+    if (typeof window !== 'undefined') {
+      return getCurrentUser();
+    }
+    return null;
+  });
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Charger l'utilisateur depuis localStorage uniquement
-    const currentUser = getCurrentUser();
-    console.log('AuthContext: Loading user from localStorage:', currentUser);
-    setUser(currentUser);
+    // Confirmer le chargement
+    console.log('AuthContext: User loaded:', user);
     setLoading(false);
-  }, []);
+  }, [user]);
 
   const login = (user: User) => {
     setUser(user);
