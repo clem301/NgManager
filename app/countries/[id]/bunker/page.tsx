@@ -211,19 +211,26 @@ export default function CountryBunkerPage() {
               }}
               onMouseUp={() => {
                 if (draggingBunker) {
-                  // Sauvegarder la nouvelle position visuelle (pos_x, pos_y) avec snap sur grille 10px
                   const element = document.getElementById(`bunker-${draggingBunker.id}`);
                   if (element) {
                     const rawX = parseInt(element.style.left);
                     const rawY = parseInt(element.style.top);
 
-                    // Snap sur une grille de 10px
-                    const posX = Math.round(rawX / 10) * 10;
-                    const posY = Math.round(rawY / 10) * 10;
+                    // Snap sur une grille de 20px
+                    const posX = Math.round(rawX / 20) * 20;
+                    const posY = Math.round(rawY / 20) * 20;
 
-                    updateBunker(draggingBunker.id, { pos_x: posX, pos_y: posY }).then(() => {
-                      loadData();
-                    });
+                    // Animation de fin de drag puis snap
+                    element.style.transition = 'all 0.2s ease-out';
+                    element.style.left = `${posX}px`;
+                    element.style.top = `${posY}px`;
+
+                    // Sauvegarder en base après l'animation
+                    setTimeout(() => {
+                      updateBunker(draggingBunker.id, { pos_x: posX, pos_y: posY }).then(() => {
+                        loadData();
+                      });
+                    }, 200);
                   }
                   setDraggingBunker(null);
                   // Reset isDragging après un délai pour empêcher le clic
@@ -234,7 +241,7 @@ export default function CountryBunkerPage() {
               {/* Grille de fond */}
               <div className="absolute inset-0 pointer-events-none" style={{
                 backgroundImage: 'linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px)',
-                backgroundSize: '40px 40px'
+                backgroundSize: '80px 80px'
               }} />
 
               {/* Bunkers */}
