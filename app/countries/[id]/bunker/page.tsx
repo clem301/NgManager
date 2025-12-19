@@ -135,11 +135,9 @@ export default function CountryBunkerPage() {
     );
   }
 
-  // Calculer les limites du canvas basées sur les positions visuelles
-  const minPosX = bunkers.length > 0 ? Math.min(...bunkers.map(b => b.pos_x), 0) - 2 : -2;
-  const maxPosX = bunkers.length > 0 ? Math.max(...bunkers.map(b => b.pos_x), 20) + 2 : 22;
-  const minPosY = bunkers.length > 0 ? Math.min(...bunkers.map(b => b.pos_y), 0) - 2 : -2;
-  const maxPosY = bunkers.length > 0 ? Math.max(...bunkers.map(b => b.pos_y), 20) + 2 : 22;
+  // Canvas libre - pas de limites basées sur les bunkers
+  const canvasWidth = 2000;
+  const canvasHeight = 1200;
 
   return (
     <div className="flex-1 p-8">
@@ -178,17 +176,15 @@ export default function CountryBunkerPage() {
             <div
               className="relative"
               style={{
-                width: `${(maxPosX - minPosX) * 80}px`,
-                height: `${(maxPosY - minPosY) * 80}px`,
-                minWidth: '1000px',
-                minHeight: '600px'
+                width: `${canvasWidth}px`,
+                height: `${canvasHeight}px`
               }}
               onContextMenu={(e) => {
                 e.preventDefault();
-                // Calculer la position visuelle où placer le bunker
+                // Calculer la position visuelle où placer le bunker (libre, pas sur grille)
                 const rect = e.currentTarget.getBoundingClientRect();
-                const posX = Math.round((e.clientX - rect.left - 35) / 80) + minPosX;
-                const posY = Math.round((e.clientY - rect.top - 35) / 80) + minPosY;
+                const posX = e.clientX - rect.left - 35;
+                const posY = e.clientY - rect.top - 35;
 
                 // Ouvrir le modal d'ajout avec la position pré-calculée
                 setRightClickPos({ posX, posY });
@@ -197,14 +193,14 @@ export default function CountryBunkerPage() {
               onMouseMove={(e) => {
                 if (draggingBunker) {
                   const rect = e.currentTarget.getBoundingClientRect();
-                  const newPosX = Math.round((e.clientX - rect.left - dragOffset.x) / 80) + minPosX;
-                  const newPosY = Math.round((e.clientY - rect.top - dragOffset.y) / 80) + minPosY;
+                  const newPosX = e.clientX - rect.left - dragOffset.x;
+                  const newPosY = e.clientY - rect.top - dragOffset.y;
 
                   // Mettre à jour la position visuellement
                   const element = document.getElementById(`bunker-${draggingBunker.id}`);
                   if (element) {
-                    element.style.left = `${(newPosX - minPosX) * 80}px`;
-                    element.style.top = `${(newPosY - minPosY) * 80}px`;
+                    element.style.left = `${newPosX}px`;
+                    element.style.top = `${newPosY}px`;
                   }
                 }
               }}
@@ -213,8 +209,8 @@ export default function CountryBunkerPage() {
                   // Sauvegarder la nouvelle position visuelle (pos_x, pos_y)
                   const element = document.getElementById(`bunker-${draggingBunker.id}`);
                   if (element) {
-                    const posX = Math.round(parseInt(element.style.left) / 80) + minPosX;
-                    const posY = Math.round(parseInt(element.style.top) / 80) + minPosY;
+                    const posX = parseInt(element.style.left);
+                    const posY = parseInt(element.style.top);
 
                     updateBunker(draggingBunker.id, { pos_x: posX, pos_y: posY }).then(() => {
                       loadData();
@@ -253,8 +249,8 @@ export default function CountryBunkerPage() {
                   }}
                   className="absolute flex flex-col items-center justify-center p-3 rounded-lg border-2 transition-all hover:scale-110 hover:z-10"
                   style={{
-                    left: `${(bunker.pos_x - minPosX) * 80}px`,
-                    top: `${(bunker.pos_y - minPosY) * 80}px`,
+                    left: `${bunker.pos_x}px`,
+                    top: `${bunker.pos_y}px`,
                     width: '70px',
                     height: '70px',
                     backgroundColor: `${getStatusColor(bunker.status)}40`,
@@ -263,8 +259,7 @@ export default function CountryBunkerPage() {
                     cursor: draggingBunker?.id === bunker.id ? 'grabbing' : 'grab',
                   }}
                 >
-                  <div className="text-xs text-white/60 font-mono pointer-events-none">({bunker.x},{bunker.y})</div>
-                  <div className="text-xs text-white font-semibold truncate w-full text-center mt-1 pointer-events-none">{bunker.name}</div>
+                  <div className="text-xs text-white font-semibold truncate w-full text-center pointer-events-none">{bunker.name}</div>
                   <div className="w-2 h-2 rounded-full mt-1 pointer-events-none" style={{ backgroundColor: getStatusColor(bunker.status) }} />
                 </button>
               ))}
