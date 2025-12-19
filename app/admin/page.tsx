@@ -81,7 +81,7 @@ export default function AdminPage() {
             ← Retour au dashboard
           </button>
           <h1 className="text-4xl font-bold text-white mb-2">
-            🛡️ Administration
+            Administration
           </h1>
           <p className="text-white/60">
             Gestion des utilisateurs et des rôles
@@ -117,85 +117,87 @@ export default function AdminPage() {
         {/* Liste des utilisateurs */}
         <div className="glass-card p-6">
           <h2 className="text-2xl font-bold text-white mb-6">
-            👥 Liste des utilisateurs
+            Liste des utilisateurs
           </h2>
 
           <div className="space-y-4">
             {users.map((targetUser) => (
               <div
                 key={targetUser.id}
-                className="glass-card p-4 flex items-center justify-between"
+                className="glass-card p-6 hover:bg-white/5 transition-all"
               >
-                <div className="flex-1">
-                  <div className="flex items-center gap-3 mb-2">
-                    <span className="text-white font-semibold">
-                      {targetUser.username}
-                    </span>
-                    <span
-                      className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold border"
-                      style={{
-                        backgroundColor: `${targetUser.role.color}20`,
-                        borderColor: `${targetUser.role.color}50`,
-                        color: targetUser.role.color,
-                      }}
-                    >
-                      {targetUser.role.emoji} {targetUser.role.name}
-                    </span>
+                <div className="flex items-center justify-between">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-3 mb-2">
+                      <span className="text-white font-semibold text-lg">
+                        {targetUser.username}
+                      </span>
+                      <span
+                        className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold border"
+                        style={{
+                          backgroundColor: `${targetUser.role.color}20`,
+                          borderColor: `${targetUser.role.color}50`,
+                          color: targetUser.role.color,
+                        }}
+                      >
+                        {targetUser.role.name}
+                      </span>
+                    </div>
+                    <div className="text-white/60 text-sm">{targetUser.email}</div>
                   </div>
-                  <div className="text-white/60 text-sm">{targetUser.email}</div>
-                </div>
 
-                {/* Actions de promotion */}
-                {targetUser.id !== user.id && (
-                  <div className="flex gap-2">
-                    {/* Bouton Fondateur (seulement pour les Fondateurs) */}
-                    {user.role.level === RoleLevel.FONDATEUR &&
-                      targetUser.role.level !== RoleLevel.FONDATEUR && (
+                  {/* Actions de promotion */}
+                  {targetUser.id !== user.id && (
+                    <div className="flex gap-2">
+                      {/* Bouton Fondateur (seulement pour les Fondateurs) */}
+                      {user.role.level === RoleLevel.FONDATEUR &&
+                        targetUser.role.level !== RoleLevel.FONDATEUR && (
+                          <button
+                            onClick={() => promoteUser(targetUser, ROLES.FONDATEUR)}
+                            className="px-4 py-2 rounded-lg bg-red-500/20 border border-red-500/50 text-red-500 hover:bg-red-500/30 transition-all text-sm font-medium"
+                          >
+                            Fondateur
+                          </button>
+                        )}
+
+                      {/* Bouton Staff */}
+                      {targetUser.role.level !== RoleLevel.STAFF && (
                         <button
-                          onClick={() => promoteUser(targetUser, ROLES.FONDATEUR)}
-                          className="px-3 py-1 rounded-lg bg-red-500/20 border border-red-500/50 text-red-500 hover:bg-red-500/30 transition-all text-sm"
+                          onClick={() => promoteUser(targetUser, ROLES.STAFF)}
+                          className="px-4 py-2 rounded-lg bg-purple-500/20 border border-purple-500/50 text-purple-500 hover:bg-purple-500/30 transition-all text-sm font-medium"
                         >
-                          🔴 Fondateur
+                          Staff
                         </button>
                       )}
 
-                    {/* Bouton Staff */}
-                    {targetUser.role.level !== RoleLevel.STAFF && (
-                      <button
-                        onClick={() => promoteUser(targetUser, ROLES.STAFF)}
-                        className="px-3 py-1 rounded-lg bg-purple-500/20 border border-purple-500/50 text-purple-500 hover:bg-purple-500/30 transition-all text-sm"
-                      >
-                        🟣 Staff
-                      </button>
-                    )}
+                      {/* Bouton Gouverneur */}
+                      {targetUser.role.level !== RoleLevel.GOUVERNEUR && (
+                        <button
+                          onClick={() => promoteUser(targetUser, ROLES.GOUVERNEUR)}
+                          className="px-4 py-2 rounded-lg bg-blue-500/20 border border-blue-500/50 text-blue-500 hover:bg-blue-500/30 transition-all text-sm font-medium"
+                        >
+                          Gouverneur
+                        </button>
+                      )}
 
-                    {/* Bouton Gouverneur */}
-                    {targetUser.role.level !== RoleLevel.GOUVERNEUR && (
-                      <button
-                        onClick={() => promoteUser(targetUser, ROLES.GOUVERNEUR)}
-                        className="px-3 py-1 rounded-lg bg-blue-500/20 border border-blue-500/50 text-blue-500 hover:bg-blue-500/30 transition-all text-sm"
-                      >
-                        🔵 Gouverneur
-                      </button>
-                    )}
+                      {/* Bouton Recrue (rétrograder) */}
+                      {targetUser.role.level !== RoleLevel.RECRUE && (
+                        <button
+                          onClick={() => promoteUser(targetUser, ROLES.RECRUE)}
+                          className="px-4 py-2 rounded-lg bg-gray-500/20 border border-gray-500/50 text-gray-400 hover:bg-gray-500/30 transition-all text-sm font-medium"
+                        >
+                          Recrue
+                        </button>
+                      )}
+                    </div>
+                  )}
 
-                    {/* Bouton Recrue (rétrograder) */}
-                    {targetUser.role.level !== RoleLevel.RECRUE && (
-                      <button
-                        onClick={() => promoteUser(targetUser, ROLES.RECRUE)}
-                        className="px-3 py-1 rounded-lg bg-gray-500/20 border border-gray-500/50 text-gray-400 hover:bg-gray-500/30 transition-all text-sm"
-                      >
-                        ⚪ Recrue
-                      </button>
-                    )}
-                  </div>
-                )}
-
-                {targetUser.id === user.id && (
-                  <div className="text-white/40 text-sm italic">
-                    C'est toi 😎
-                  </div>
-                )}
+                  {targetUser.id === user.id && (
+                    <div className="text-white/40 text-sm italic">
+                      C'est toi
+                    </div>
+                  )}
+                </div>
               </div>
             ))}
           </div>
