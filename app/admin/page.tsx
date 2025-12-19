@@ -44,8 +44,14 @@ export default function AdminPage() {
     const result = await updateUserRole(targetUser.id, newRole);
 
     if (result.success) {
-      loadUsers();
-      alert(`✅ ${targetUser.username} est maintenant ${newRole.emoji} ${newRole.name}`);
+      // Si c'est l'utilisateur connecté, recharger la page pour mettre à jour l'interface
+      if (targetUser.id === user?.id) {
+        alert(`✅ Tu es maintenant ${newRole.emoji} ${newRole.name}! La page va se recharger.`);
+        window.location.reload();
+      } else {
+        loadUsers();
+        alert(`✅ ${targetUser.username} est maintenant ${newRole.emoji} ${newRole.name}`);
+      }
     } else {
       alert(`❌ Erreur: ${result.error}`);
     }
