@@ -20,6 +20,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     // Charger l'utilisateur depuis localStorage uniquement
     const currentUser = getCurrentUser();
+    console.log('AuthContext: Loading user from localStorage:', currentUser);
     setUser(currentUser);
     setLoading(false);
   }, []);

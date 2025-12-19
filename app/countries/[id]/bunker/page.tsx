@@ -192,6 +192,7 @@ export default function CountryBunkerPage() {
               }}
               onMouseMove={(e) => {
                 if (draggingBunker) {
+                  e.preventDefault();
                   const rect = e.currentTarget.getBoundingClientRect();
                   const newPosX = e.clientX - rect.left - dragOffset.x;
                   const newPosY = e.clientY - rect.top - dragOffset.y;
@@ -201,6 +202,7 @@ export default function CountryBunkerPage() {
                   if (element) {
                     element.style.left = `${newPosX}px`;
                     element.style.top = `${newPosY}px`;
+                    element.style.transition = 'none';
                   }
                 }
               }}

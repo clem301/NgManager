@@ -111,11 +111,15 @@ export function getCurrentUser(): User | null {
   if (typeof window === 'undefined') return null;
 
   const userStr = localStorage.getItem(AUTH_STORAGE_KEY);
+  console.log('getCurrentUser: localStorage value:', userStr);
   if (!userStr) return null;
 
   try {
-    return JSON.parse(userStr);
-  } catch {
+    const user = JSON.parse(userStr);
+    console.log('getCurrentUser: parsed user:', user);
+    return user;
+  } catch (e) {
+    console.error('getCurrentUser: parse error:', e);
     return null;
   }
 }
