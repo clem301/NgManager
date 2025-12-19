@@ -211,11 +211,15 @@ export default function CountryBunkerPage() {
               }}
               onMouseUp={() => {
                 if (draggingBunker) {
-                  // Sauvegarder la nouvelle position visuelle (pos_x, pos_y)
+                  // Sauvegarder la nouvelle position visuelle (pos_x, pos_y) avec snap sur grille 10px
                   const element = document.getElementById(`bunker-${draggingBunker.id}`);
                   if (element) {
-                    const posX = parseInt(element.style.left);
-                    const posY = parseInt(element.style.top);
+                    const rawX = parseInt(element.style.left);
+                    const rawY = parseInt(element.style.top);
+
+                    // Snap sur une grille de 10px
+                    const posX = Math.round(rawX / 10) * 10;
+                    const posY = Math.round(rawY / 10) * 10;
 
                     updateBunker(draggingBunker.id, { pos_x: posX, pos_y: posY }).then(() => {
                       loadData();
