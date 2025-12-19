@@ -40,10 +40,11 @@ export default function CountriesPage() {
   const handleJoin = async (countryId: string) => {
     if (!user) return;
 
-    const result = await joinCountry(countryId, user.id);
+    const result = await joinCountry(countryId, user.id, user.role.level);
 
     if (result.success) {
       loadCountries();
+      alert('✅ Tu as rejoint le pays avec succès !');
     } else {
       alert(result.error);
     }

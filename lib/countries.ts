@@ -183,12 +183,40 @@ export async function getCountryMembers(countryId: string) {
 
 /**
  * Rejoindre un pays
+ * Les utilisateurs normaux (level < 80) ne peuvent être que dans un seul pays
+ * Staff et Fondateur (level >= 80) peuvent être dans plusieurs pays
  */
 export async function joinCountry(
   countryId: string,
-  userId: string
+  userId: string,
+  userRoleLevel: number
 ): Promise<{ success: boolean; error?: string }> {
   try {
+    // Vérifier si l'utilisateur est déjà membre
+    const { data: existingMember } = await supabase
+      .from('country_members')
+      .select('*')
+      .eq('country_id', countryId)
+      .eq('user_id', userId)
+      .single();
+
+    if (existingMember) {
+      return { success: false, error: 'Tu es déjà membre de ce pays' };
+    }
+
+    // Si l'utilisateur n'est pas Staff/Fondateur (level < 80), vérifier qu'il n'a pas déjà un pays
+    if (userRoleLevel < 80) {
+      const { data: userCountries } = await supabase
+        .from('country_members')
+        .select('id')
+        .eq('user_id', userId);
+
+      if (userCountries && userCountries.length > 0) {
+        return { success: false, error: 'Tu ne peux rejoindre qu\'un seul pays. Les Staff et Fondateur peuvent rejoindre plusieurs pays.' };
+      }
+    }
+
+    // Ajouter l'utilisateur comme membre
     const { error } = await supabase
       .from('country_members')
       .insert([{
