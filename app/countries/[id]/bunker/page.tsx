@@ -7,7 +7,7 @@ import GlassCard from '@/components/ui/GlassCard';
 import GlassButton from '@/components/ui/GlassButton';
 import GlassInput from '@/components/ui/GlassInput';
 import { getCountryById } from '@/lib/countries';
-import { getCountryBunkers, createBunker, updateBunker, deleteBunker, Bunker, BunkerStatus } from '@/lib/bunkers';
+import { getCountryBunkers, createBunker, updateBunker, deleteBunker, Bunker, BunkerStatus, BunkerType } from '@/lib/bunkers';
 
 export default function CountryBunkerPage() {
   const router = useRouter();
@@ -19,9 +19,10 @@ export default function CountryBunkerPage() {
   const [selectedBunker, setSelectedBunker] = useState<Bunker | null>(null);
   const [showAddModal, setShowAddModal] = useState(false);
   const [rightClickPos, setRightClickPos] = useState<{ posX: number; posY: number } | null>(null);
-  const [newBunker, setNewBunker] = useState({ x: 0, y: 0, name: '', status: 'vacant' as BunkerStatus });
+  const [newBunker, setNewBunker] = useState({ x: 0, y: 0, name: '', status: 'vacant' as BunkerStatus, type: 'normal' as BunkerType });
   const [draggingBunker, setDraggingBunker] = useState<Bunker | null>(null);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
+  const [isDragging, setIsDragging] = useState(false);
 
   useEffect(() => {
     if (!user) {
@@ -62,6 +63,7 @@ export default function CountryBunkerPage() {
       posX,
       posY,
       newBunker.status,
+      newBunker.type,
       newBunker.name
     );
 
@@ -69,7 +71,7 @@ export default function CountryBunkerPage() {
       loadData();
       setShowAddModal(false);
       setRightClickPos(null);
-      setNewBunker({ x: 0, y: 0, name: '', status: 'vacant' });
+      setNewBunker({ x: 0, y: 0, name: '', status: 'vacant', type: 'normal' });
     } else {
       alert(result.error);
     }
@@ -193,6 +195,7 @@ export default function CountryBunkerPage() {
               onMouseMove={(e) => {
                 if (draggingBunker) {
                   e.preventDefault();
+                  setIsDragging(true);
                   const rect = e.currentTarget.getBoundingClientRect();
                   const newPosX = e.clientX - rect.left - dragOffset.x;
                   const newPosY = e.clientY - rect.top - dragOffset.y;
@@ -219,6 +222,8 @@ export default function CountryBunkerPage() {
                     });
                   }
                   setDraggingBunker(null);
+                  // Reset isDragging après un délai pour empêcher le clic
+                  setTimeout(() => setIsDragging(false), 100);
                 }
               }}
             >
@@ -234,13 +239,14 @@ export default function CountryBunkerPage() {
                   key={bunker.id}
                   id={`bunker-${bunker.id}`}
                   onClick={(e) => {
-                    if (!draggingBunker) {
+                    if (!isDragging) {
                       e.stopPropagation();
                       setSelectedBunker(bunker);
                     }
                   }}
                   onMouseDown={(e) => {
                     if (e.button === 0) { // Clic gauche uniquement
+                      setIsDragging(false);
                       setDragOffset({
                         x: 35,
                         y: 35
@@ -248,7 +254,7 @@ export default function CountryBunkerPage() {
                       setDraggingBunker(bunker);
                     }
                   }}
-                  className="absolute flex flex-col items-center justify-center p-3 rounded-lg border-2 transition-all hover:scale-110 hover:z-10"
+                  className="absolute flex flex-col items-center justify-center p-3 border-2 transition-all hover:scale-110 hover:z-10"
                   style={{
                     left: `${bunker.pos_x}px`,
                     top: `${bunker.pos_y}px`,
@@ -258,6 +264,8 @@ export default function CountryBunkerPage() {
                     borderColor: getStatusColor(bunker.status),
                     boxShadow: `0 0 20px ${getStatusColor(bunker.status)}30`,
                     cursor: draggingBunker?.id === bunker.id ? 'grabbing' : 'grab',
+                    borderRadius: bunker.type === 'member' ? '0' : '8px',
+                    clipPath: bunker.type === 'member' ? 'polygon(50% 0%, 0% 100%, 100% 100%)' : 'none',
                   }}
                 >
                   <div className="text-xs text-white font-semibold truncate w-full text-center pointer-events-none">{bunker.name}</div>
@@ -349,6 +357,36 @@ export default function CountryBunkerPage() {
                       value={newBunker.y.toString()}
                       onChange={(e) => setNewBunker({ ...newBunker, y: parseInt(e.target.value) || 0 })}
                     />
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-sm text-white/60 mb-2">Type</label>
+                  <div className="grid grid-cols-2 gap-2">
+                    <button
+                      onClick={() => setNewBunker({ ...newBunker, type: 'normal' })}
+                      className={`p-3 rounded-lg border-2 transition-all ${
+                        newBunker.type === 'normal'
+                          ? 'border-blue-500 bg-blue-500/20'
+                          : 'border-white/10 hover:border-white/30'
+                      }`}
+                    >
+                      <div className="w-12 h-12 mx-auto mb-2 border-2 border-white/40 rounded-lg" />
+                      <div className="text-sm text-white">Normal</div>
+                    </button>
+                    <button
+                      onClick={() => setNewBunker({ ...newBunker, type: 'member' })}
+                      className={`p-3 rounded-lg border-2 transition-all ${
+                        newBunker.type === 'member'
+                          ? 'border-blue-500 bg-blue-500/20'
+                          : 'border-white/10 hover:border-white/30'
+                      }`}
+                    >
+                      <div
+                        className="w-12 h-12 mx-auto mb-2 border-2 border-white/40"
+                        style={{ clipPath: 'polygon(50% 0%, 0% 100%, 100% 100%)' }}
+                      />
+                      <div className="text-sm text-white">Membre</div>
+                    </button>
                   </div>
                 </div>
                 <div>

@@ -1,6 +1,7 @@
 import { supabase } from './supabase';
 
 export type BunkerStatus = 'vacant' | 'paid' | 'occupied';
+export type BunkerType = 'normal' | 'member'; // normal = carré, member = triangle
 
 export interface Bunker {
   id: string;
@@ -10,6 +11,7 @@ export interface Bunker {
   pos_x: number; // Position visuelle sur canvas
   pos_y: number; // Position visuelle sur canvas
   status: BunkerStatus;
+  type: BunkerType;
   name?: string;
   occupant_id?: string;
   occupant?: {
@@ -58,6 +60,7 @@ export async function createBunker(
   posX: number,
   posY: number,
   status: BunkerStatus = 'vacant',
+  type: BunkerType = 'normal',
   name?: string,
   occupantId?: string
 ): Promise<{ success: boolean; bunker?: Bunker; error?: string }> {
@@ -71,6 +74,7 @@ export async function createBunker(
         pos_x: posX,
         pos_y: posY,
         status,
+        type,
         name,
         occupant_id: occupantId,
       }])
@@ -94,7 +98,7 @@ export async function createBunker(
  */
 export async function updateBunker(
   bunkerId: string,
-  updates: Partial<Pick<Bunker, 'x' | 'y' | 'pos_x' | 'pos_y' | 'status' | 'name' | 'occupant_id'>>
+  updates: Partial<Pick<Bunker, 'x' | 'y' | 'pos_x' | 'pos_y' | 'status' | 'type' | 'name' | 'occupant_id'>>
 ): Promise<{ success: boolean; error?: string }> {
   try {
     const { error } = await supabase
