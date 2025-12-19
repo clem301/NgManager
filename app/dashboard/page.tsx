@@ -1,24 +1,41 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
-import GlassCard from '@/components/ui/GlassCard';
-import GlassButton from '@/components/ui/GlassButton';
-import Badge from '@/components/ui/Badge';
-import { RoleLevel } from '@/lib/roles';
+import { getUserCountries, CountryWithOwner } from '@/lib/countries';
 
 export default function DashboardPage() {
   const router = useRouter();
-  const { user, loading, logout } = useAuth();
+  const { user, loading } = useAuth();
+  const [userCountries, setUserCountries] = useState<CountryWithOwner[]>([]);
+  const [loadingCountries, setLoadingCountries] = useState(true);
 
   useEffect(() => {
     if (!loading && !user) {
       router.push('/login');
+      return;
+    }
+
+    if (user) {
+      loadUserCountries();
     }
   }, [user, loading, router]);
 
-  if (loading) {
+  const loadUserCountries = async () => {
+    if (!user) return;
+
+    const countries = await getUserCountries(user.id);
+    setUserCountries(countries);
+    setLoadingCountries(false);
+
+    // Si l'utilisateur a un pays, rediriger vers le premier pays
+    if (countries.length > 0) {
+      router.push(`/countries/${countries[0].id}`);
+    }
+  };
+
+  if (loading || loadingCountries) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-white/60">Chargement...</div>
@@ -30,112 +47,11 @@ export default function DashboardPage() {
     return null;
   }
 
-  const handleLogout = () => {
-    logout();
-    router.push('/');
-  };
+  // Si aucun pays, rediriger vers la liste des pays
+  if (userCountries.length === 0) {
+    router.push('/countries');
+    return null;
+  }
 
-  return (
-    <div className="min-h-screen py-20 px-6">
-      <div className="max-w-6xl mx-auto space-y-8">
-        {/* Header */}
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-5xl font-bold gradient-text mb-2">Dashboard</h1>
-            <div className="flex items-center gap-3">
-              <p className="text-white/60">Content de te revoir, {user.username} !</p>
-              <span
-                className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold border"
-                style={{
-                  backgroundColor: `${user.role.color}20`,
-                  borderColor: `${user.role.color}50`,
-                  color: user.role.color,
-                }}
-              >
-                {user.role.name}
-              </span>
-            </div>
-          </div>
-          <GlassButton variant="secondary" onClick={handleLogout}>
-            Déconnexion
-          </GlassButton>
-        </div>
-
-        {/* Quick Actions */}
-        <div>
-          <h2 className="text-2xl font-bold mb-6 gradient-text">Actions rapides</h2>
-          <div className="grid md:grid-cols-2 gap-6">
-            {/* Accès admin pour Fondateur et Staff */}
-            {user.role.level >= RoleLevel.STAFF && (
-              <div onClick={() => router.push('/admin')}>
-                <GlassCard className="p-6 hover:scale-105 transition-transform cursor-pointer">
-                  <h3 className="text-xl font-bold mb-2">Administration</h3>
-                  <p className="text-white/60 text-sm">
-                    Gérer les utilisateurs et les rôles
-                  </p>
-                </GlassCard>
-              </div>
-            )}
-
-            <div onClick={() => router.push('/countries/create')}>
-              <GlassCard className="p-6 hover:scale-105 transition-transform cursor-pointer">
-                <h3 className="text-xl font-bold mb-2">Créer un pays</h3>
-                <p className="text-white/60 text-sm">
-                  Lance-toi et crée ton premier pays virtuel
-                </p>
-              </GlassCard>
-            </div>
-
-            <div onClick={() => router.push('/countries')}>
-              <GlassCard className="p-6 hover:scale-105 transition-transform cursor-pointer">
-                <h3 className="text-xl font-bold mb-2">Rejoindre un pays</h3>
-                <p className="text-white/60 text-sm">
-                  Trouve un pays existant et fais ta demande
-                </p>
-              </GlassCard>
-            </div>
-          </div>
-        </div>
-
-        {/* User Info */}
-        <GlassCard className="p-6">
-          <h3 className="text-lg font-bold mb-4">Informations du compte</h3>
-          <div className="space-y-3 text-white/70">
-            <div className="flex justify-between items-center">
-              <span>Nom d&apos;utilisateur :</span>
-              <span className="text-white font-semibold">{user.username}</span>
-            </div>
-            <div className="flex justify-between items-center">
-              <span>Email :</span>
-              <span className="text-white font-semibold">{user.email}</span>
-            </div>
-            <div className="flex justify-between items-center">
-              <span>Grade :</span>
-              <span
-                className="inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold border"
-                style={{
-                  backgroundColor: `${user.role.color}20`,
-                  borderColor: `${user.role.color}50`,
-                  color: user.role.color,
-                }}
-              >
-                {user.role.name}
-              </span>
-            </div>
-            <div className="flex justify-between items-center">
-              <span>Niveau :</span>
-              <span className="text-white font-semibold">{user.role.level}</span>
-            </div>
-            <div className="flex justify-between items-center">
-              <span>ID :</span>
-              <span className="text-white/40 font-mono text-sm">{user.id}</span>
-            </div>
-          </div>
-          <div className="mt-4 pt-4 border-t border-white/10">
-            <p className="text-sm text-white/60 italic">{user.role.description}</p>
-          </div>
-        </GlassCard>
-      </div>
-    </div>
-  );
+  return null;
 }
