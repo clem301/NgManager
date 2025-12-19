@@ -271,7 +271,7 @@ export default function CountryBunkerPage() {
                     <label className="block text-sm text-white/60 mb-2">X</label>
                     <GlassInput
                       type="number"
-                      value={newBunker.x}
+                      value={newBunker.x.toString()}
                       onChange={(e) => setNewBunker({ ...newBunker, x: parseInt(e.target.value) || 0 })}
                     />
                   </div>
@@ -279,7 +279,7 @@ export default function CountryBunkerPage() {
                     <label className="block text-sm text-white/60 mb-2">Y</label>
                     <GlassInput
                       type="number"
-                      value={newBunker.y}
+                      value={newBunker.y.toString()}
                       onChange={(e) => setNewBunker({ ...newBunker, y: parseInt(e.target.value) || 0 })}
                     />
                   </div>
