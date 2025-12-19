@@ -18,6 +18,7 @@ export default function CountryBunkerPage() {
   const [loading, setLoading] = useState(true);
   const [selectedBunker, setSelectedBunker] = useState<Bunker | null>(null);
   const [showAddModal, setShowAddModal] = useState(false);
+  const [rightClickPos, setRightClickPos] = useState<{ posX: number; posY: number } | null>(null);
   const [newBunker, setNewBunker] = useState({ x: 0, y: 0, name: '', status: 'vacant' as BunkerStatus });
   const [draggingBunker, setDraggingBunker] = useState<Bunker | null>(null);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
@@ -50,10 +51,16 @@ export default function CountryBunkerPage() {
       return;
     }
 
+    // Utiliser rightClickPos si disponible, sinon (0, 0) par défaut
+    const posX = rightClickPos?.posX ?? 0;
+    const posY = rightClickPos?.posY ?? 0;
+
     const result = await createBunker(
       params.id as string,
       newBunker.x,
       newBunker.y,
+      posX,
+      posY,
       newBunker.status,
       newBunker.name
     );
@@ -61,6 +68,7 @@ export default function CountryBunkerPage() {
     if (result.success) {
       loadData();
       setShowAddModal(false);
+      setRightClickPos(null);
       setNewBunker({ x: 0, y: 0, name: '', status: 'vacant' });
     } else {
       alert(result.error);
@@ -127,11 +135,11 @@ export default function CountryBunkerPage() {
     );
   }
 
-  // Calculer les limites du canvas
-  const minX = bunkers.length > 0 ? Math.min(...bunkers.map(b => b.x), 0) - 2 : -2;
-  const maxX = bunkers.length > 0 ? Math.max(...bunkers.map(b => b.x), 20) + 2 : 22;
-  const minY = bunkers.length > 0 ? Math.min(...bunkers.map(b => b.y), 0) - 2 : -2;
-  const maxY = bunkers.length > 0 ? Math.max(...bunkers.map(b => b.y), 20) + 2 : 22;
+  // Calculer les limites du canvas basées sur les positions visuelles
+  const minPosX = bunkers.length > 0 ? Math.min(...bunkers.map(b => b.pos_x), 0) - 2 : -2;
+  const maxPosX = bunkers.length > 0 ? Math.max(...bunkers.map(b => b.pos_x), 20) + 2 : 22;
+  const minPosY = bunkers.length > 0 ? Math.min(...bunkers.map(b => b.pos_y), 0) - 2 : -2;
+  const maxPosY = bunkers.length > 0 ? Math.max(...bunkers.map(b => b.pos_y), 20) + 2 : 22;
 
   return (
     <div className="flex-1 p-8">
@@ -170,48 +178,45 @@ export default function CountryBunkerPage() {
             <div
               className="relative"
               style={{
-                width: `${(maxX - minX) * 80}px`,
-                height: `${(maxY - minY) * 80}px`,
+                width: `${(maxPosX - minPosX) * 80}px`,
+                height: `${(maxPosY - minPosY) * 80}px`,
                 minWidth: '1000px',
                 minHeight: '600px'
               }}
               onContextMenu={(e) => {
                 e.preventDefault();
+                // Calculer la position visuelle où placer le bunker
                 const rect = e.currentTarget.getBoundingClientRect();
-                const x = Math.round((e.clientX - rect.left - 35) / 80) + minX;
-                const y = Math.round((e.clientY - rect.top - 35) / 80) + minY;
+                const posX = Math.round((e.clientX - rect.left - 35) / 80) + minPosX;
+                const posY = Math.round((e.clientY - rect.top - 35) / 80) + minPosY;
 
-                // Créer un bunker rapidement
-                const name = `BK-${x}-${y}`;
-                createBunker(params.id as string, x, y, 'vacant', name).then((result) => {
-                  if (result.success) {
-                    loadData();
-                  }
-                });
+                // Ouvrir le modal d'ajout avec la position pré-calculée
+                setRightClickPos({ posX, posY });
+                setShowAddModal(true);
               }}
               onMouseMove={(e) => {
                 if (draggingBunker) {
                   const rect = e.currentTarget.getBoundingClientRect();
-                  const newX = Math.round((e.clientX - rect.left - dragOffset.x) / 80) + minX;
-                  const newY = Math.round((e.clientY - rect.top - dragOffset.y) / 80) + minY;
+                  const newPosX = Math.round((e.clientX - rect.left - dragOffset.x) / 80) + minPosX;
+                  const newPosY = Math.round((e.clientY - rect.top - dragOffset.y) / 80) + minPosY;
 
                   // Mettre à jour la position visuellement
                   const element = document.getElementById(`bunker-${draggingBunker.id}`);
                   if (element) {
-                    element.style.left = `${(newX - minX) * 80}px`;
-                    element.style.top = `${(newY - minY) * 80}px`;
+                    element.style.left = `${(newPosX - minPosX) * 80}px`;
+                    element.style.top = `${(newPosY - minPosY) * 80}px`;
                   }
                 }
               }}
               onMouseUp={() => {
                 if (draggingBunker) {
-                  // Sauvegarder la nouvelle position
+                  // Sauvegarder la nouvelle position visuelle (pos_x, pos_y)
                   const element = document.getElementById(`bunker-${draggingBunker.id}`);
                   if (element) {
-                    const x = Math.round(parseInt(element.style.left) / 80) + minX;
-                    const y = Math.round(parseInt(element.style.top) / 80) + minY;
+                    const posX = Math.round(parseInt(element.style.left) / 80) + minPosX;
+                    const posY = Math.round(parseInt(element.style.top) / 80) + minPosY;
 
-                    updateBunker(draggingBunker.id, { x, y }).then(() => {
+                    updateBunker(draggingBunker.id, { pos_x: posX, pos_y: posY }).then(() => {
                       loadData();
                     });
                   }
@@ -248,8 +253,8 @@ export default function CountryBunkerPage() {
                   }}
                   className="absolute flex flex-col items-center justify-center p-3 rounded-lg border-2 transition-all hover:scale-110 hover:z-10"
                   style={{
-                    left: `${(bunker.x - minX) * 80}px`,
-                    top: `${(bunker.y - minY) * 80}px`,
+                    left: `${(bunker.pos_x - minPosX) * 80}px`,
+                    top: `${(bunker.pos_y - minPosY) * 80}px`,
                     width: '70px',
                     height: '70px',
                     backgroundColor: `${getStatusColor(bunker.status)}40`,
