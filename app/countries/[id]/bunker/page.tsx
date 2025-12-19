@@ -221,41 +221,44 @@ export default function CountryBunkerPage() {
       {/* Modal ajout bunker */}
       {showAddModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50" onClick={() => setShowAddModal(false)}>
-          <GlassCard className="p-6 max-w-md w-full m-4" onClick={e => e.stopPropagation()}>
-            <h3 className="text-xl font-bold text-white mb-4">
-              Ajouter un bunker ({newBunkerPos.x}, {newBunkerPos.y})
-            </h3>
-            <div className="space-y-3">
-              <GlassButton
-                variant="secondary"
-                onClick={() => handleAddBunker('vacant')}
-                className="w-full"
-              >
-                Vacant
-              </GlassButton>
-              <GlassButton
-                variant="primary"
-                onClick={() => handleAddBunker('paid', `BK-${newBunkerPos.x}-${newBunkerPos.y}`)}
-                className="w-full"
-              >
-                Payé
-              </GlassButton>
-              <GlassButton
-                variant="primary"
-                onClick={() => handleAddBunker('occupied', `BK-${newBunkerPos.x}-${newBunkerPos.y}`)}
-                className="w-full"
-              >
-                Occupé
-              </GlassButton>
-            </div>
-          </GlassCard>
+          <div onClick={e => e.stopPropagation()}>
+            <GlassCard className="p-6 max-w-md w-full m-4">
+              <h3 className="text-xl font-bold text-white mb-4">
+                Ajouter un bunker ({newBunkerPos.x}, {newBunkerPos.y})
+              </h3>
+              <div className="space-y-3">
+                <GlassButton
+                  variant="secondary"
+                  onClick={() => handleAddBunker('vacant')}
+                  className="w-full"
+                >
+                  Vacant
+                </GlassButton>
+                <GlassButton
+                  variant="primary"
+                  onClick={() => handleAddBunker('paid', `BK-${newBunkerPos.x}-${newBunkerPos.y}`)}
+                  className="w-full"
+                >
+                  Payé
+                </GlassButton>
+                <GlassButton
+                  variant="primary"
+                  onClick={() => handleAddBunker('occupied', `BK-${newBunkerPos.x}-${newBunkerPos.y}`)}
+                  className="w-full"
+                >
+                  Occupé
+                </GlassButton>
+              </div>
+            </GlassCard>
+          </div>
         </div>
       )}
 
       {/* Modal détails bunker */}
       {selectedBunker && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50" onClick={() => setSelectedBunker(null)}>
-          <GlassCard className="p-6 max-w-md w-full m-4" onClick={e => e.stopPropagation()}>
+          <div onClick={e => e.stopPropagation()}>
+            <GlassCard className="p-6 max-w-md w-full m-4">
             <h3 className="text-xl font-bold text-white mb-4">
               Bunker ({selectedBunker.x}, {selectedBunker.y})
             </h3>
@@ -309,7 +312,8 @@ export default function CountryBunkerPage() {
                 Supprimer
               </GlassButton>
             </div>
-          </GlassCard>
+            </GlassCard>
+          </div>
         </div>
       )}
     </div>
