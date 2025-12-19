@@ -38,55 +38,30 @@ export default function ProfilePage() {
   return (
     <div className="min-h-screen py-20 px-6">
       <div className="max-w-6xl mx-auto space-y-8">
-        {/* Header */}
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-5xl font-bold gradient-text mb-2">Profil</h1>
-            <div className="flex items-center gap-3">
-              <p className="text-white/60">Content de te revoir, {user.username} !</p>
-              <span
-                className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold border"
-                style={{
-                  backgroundColor: `${user.role.color}20`,
-                  borderColor: `${user.role.color}50`,
-                  color: user.role.color,
-                }}
-              >
-                {user.role.name}
-              </span>
-            </div>
-          </div>
-          <GlassButton variant="secondary" onClick={handleLogout}>
-            Déconnexion
-          </GlassButton>
-        </div>
-
-        {/* Quick Actions */}
-        <div>
-          <h2 className="text-2xl font-bold mb-6 gradient-text">Navigation</h2>
-          <div className="grid md:grid-cols-2 gap-6">
-            {/* Accès admin pour Fondateur et Staff */}
-            {user.role.level >= RoleLevel.STAFF && (
-              <div onClick={() => router.push('/admin')}>
-                <GlassCard className="p-6 hover:scale-105 transition-transform cursor-pointer">
-                  <h3 className="text-xl font-bold mb-2">Administration</h3>
-                  <p className="text-white/60 text-sm">
-                    Gérer les utilisateurs et les rôles
-                  </p>
-                </GlassCard>
+        {/* Header avec glassmorphisme */}
+        <GlassCard className="p-8">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-5xl font-bold gradient-text mb-2">Profil</h1>
+              <div className="flex items-center gap-3">
+                <p className="text-white/60">Content de te revoir, {user.username} !</p>
+                <span
+                  className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold border"
+                  style={{
+                    backgroundColor: `${user.role.color}20`,
+                    borderColor: `${user.role.color}50`,
+                    color: user.role.color,
+                  }}
+                >
+                  {user.role.name}
+                </span>
               </div>
-            )}
-
-            <div onClick={() => router.push('/dashboard')}>
-              <GlassCard className="p-6 hover:scale-105 transition-transform cursor-pointer">
-                <h3 className="text-xl font-bold mb-2">Retour au pays</h3>
-                <p className="text-white/60 text-sm">
-                  Revenir à la page principale
-                </p>
-              </GlassCard>
             </div>
+            <GlassButton variant="secondary" onClick={handleLogout}>
+              Déconnexion
+            </GlassButton>
           </div>
-        </div>
+        </GlassCard>
 
         {/* User Info */}
         <GlassCard className="p-6">
