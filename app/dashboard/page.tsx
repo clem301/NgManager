@@ -79,18 +79,6 @@ export default function DashboardPage() {
           </GlassCard>
         </div>
 
-        {/* Welcome Card */}
-        <GlassCard strong className="p-10">
-          <div className="text-center space-y-6">
-            <h2 className="text-3xl font-bold gradient-text">Bienvenue sur ton dashboard !</h2>
-            <p className="text-white/70 text-lg max-w-2xl mx-auto">
-              Ton compte a été créé avec succès. C&apos;est ici que tu vas pouvoir gérer tes pays,
-              tes équipes et tout ton empire virtuel.
-            </p>
-            <Badge variant="default">Application en développement</Badge>
-          </div>
-        </GlassCard>
-
         {/* Quick Actions */}
         <div>
           <h2 className="text-2xl font-bold mb-6 gradient-text">Actions rapides</h2>
