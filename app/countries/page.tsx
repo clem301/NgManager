@@ -71,7 +71,7 @@ export default function CountriesPage() {
               ← Retour au dashboard
             </button>
             <h1 className="text-4xl font-bold gradient-text mb-2">
-              Pays disponibles 🌍
+              Pays disponibles
             </h1>
             <p className="text-white/60">
               Rejoins un pays ou crée le tien
@@ -81,7 +81,7 @@ export default function CountriesPage() {
             variant="primary"
             onClick={() => router.push('/countries/create')}
           >
-            ➕ Créer un pays
+            Créer un pays
           </GlassButton>
         </div>
 
@@ -122,7 +122,7 @@ export default function CountriesPage() {
                     </p>
                     <div className="flex items-center justify-between text-sm">
                       <span className="text-white/60">
-                        👥 {country.member_count} membre{country.member_count > 1 ? 's' : ''}
+                        {country.member_count} membre{country.member_count > 1 ? 's' : ''}
                       </span>
                       <span className="text-white/60">
                         Fondé par {country.owner?.username}
@@ -141,7 +141,6 @@ export default function CountriesPage() {
           </h2>
           {allCountries.length === 0 ? (
             <GlassCard className="p-12 text-center">
-              <div className="text-6xl mb-4">🏜️</div>
               <h3 className="text-xl font-bold text-white mb-2">
                 Aucun pays pour le moment
               </h3>
@@ -152,7 +151,7 @@ export default function CountriesPage() {
                 variant="primary"
                 onClick={() => router.push('/countries/create')}
               >
-                ➕ Créer le premier pays
+                Créer le premier pays
               </GlassButton>
             </GlassCard>
           ) : (
@@ -190,7 +189,7 @@ export default function CountriesPage() {
                     </p>
                     <div className="flex items-center justify-between text-sm mb-4">
                       <span className="text-white/60">
-                        👥 {country.member_count} membre{country.member_count > 1 ? 's' : ''}
+                        {country.member_count} membre{country.member_count > 1 ? 's' : ''}
                       </span>
                       <span className="text-white/60">
                         par {country.owner?.username}

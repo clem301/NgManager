@@ -43,7 +43,7 @@ export default function DashboardPage() {
           <div>
             <h1 className="text-5xl font-bold gradient-text mb-2">Dashboard</h1>
             <div className="flex items-center gap-3">
-              <p className="text-white/60">Content de te revoir, {user.username} ! 👋</p>
+              <p className="text-white/60">Content de te revoir, {user.username} !</p>
               <span
                 className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold border"
                 style={{
@@ -52,7 +52,7 @@ export default function DashboardPage() {
                   color: user.role.color,
                 }}
               >
-                {user.role.emoji} {user.role.name}
+                {user.role.name}
               </span>
             </div>
           </div>
@@ -64,19 +64,16 @@ export default function DashboardPage() {
         {/* Stats */}
         <div className="grid md:grid-cols-3 gap-6">
           <GlassCard className="p-6">
-            <div className="text-4xl mb-3">🏰</div>
             <h3 className="text-2xl font-bold mb-2">0</h3>
             <p className="text-white/60 text-sm">Pays gérés</p>
           </GlassCard>
 
           <GlassCard className="p-6">
-            <div className="text-4xl mb-3">👥</div>
             <h3 className="text-2xl font-bold mb-2">0</h3>
             <p className="text-white/60 text-sm">Membres actifs</p>
           </GlassCard>
 
           <GlassCard className="p-6">
-            <div className="text-4xl mb-3">✨</div>
             <h3 className="text-2xl font-bold mb-2">0</h3>
             <p className="text-white/60 text-sm">Créations</p>
           </GlassCard>
@@ -85,7 +82,6 @@ export default function DashboardPage() {
         {/* Welcome Card */}
         <GlassCard strong className="p-10">
           <div className="text-center space-y-6">
-            <div className="text-6xl">🎉</div>
             <h2 className="text-3xl font-bold gradient-text">Bienvenue sur ton dashboard !</h2>
             <p className="text-white/70 text-lg max-w-2xl mx-auto">
               Ton compte a été créé avec succès. C&apos;est ici que tu vas pouvoir gérer tes pays,
@@ -103,7 +99,6 @@ export default function DashboardPage() {
             {user.role.level >= RoleLevel.STAFF && (
               <div onClick={() => router.push('/admin')}>
                 <GlassCard className="p-6 hover:scale-105 transition-transform cursor-pointer">
-                  <div className="text-4xl mb-4">🛡️</div>
                   <h3 className="text-xl font-bold mb-2">Administration</h3>
                   <p className="text-white/60 text-sm">
                     Gérer les utilisateurs et les rôles
@@ -114,7 +109,6 @@ export default function DashboardPage() {
 
             <div onClick={() => router.push('/countries/create')}>
               <GlassCard className="p-6 hover:scale-105 transition-transform cursor-pointer">
-                <div className="text-4xl mb-4">➕</div>
                 <h3 className="text-xl font-bold mb-2">Créer un pays</h3>
                 <p className="text-white/60 text-sm">
                   Lance-toi et crée ton premier pays virtuel
@@ -124,7 +118,6 @@ export default function DashboardPage() {
 
             <div onClick={() => router.push('/countries')}>
               <GlassCard className="p-6 hover:scale-105 transition-transform cursor-pointer">
-                <div className="text-4xl mb-4">🔍</div>
                 <h3 className="text-xl font-bold mb-2">Rejoindre un pays</h3>
                 <p className="text-white/60 text-sm">
                   Trouve un pays existant et fais ta demande
@@ -156,7 +149,7 @@ export default function DashboardPage() {
                   color: user.role.color,
                 }}
               >
-                {user.role.emoji} {user.role.name}
+                {user.role.name}
               </span>
             </div>
             <div className="flex justify-between items-center">
