@@ -19,6 +19,8 @@ export default function CountryBunkerPage() {
   const [selectedBunker, setSelectedBunker] = useState<Bunker | null>(null);
   const [showAddModal, setShowAddModal] = useState(false);
   const [newBunker, setNewBunker] = useState({ x: 0, y: 0, name: '', status: 'vacant' as BunkerStatus });
+  const [draggingBunker, setDraggingBunker] = useState<Bunker | null>(null);
+  const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
     if (!user) {
@@ -163,15 +165,62 @@ export default function CountryBunkerPage() {
         {/* Canvas libre */}
         <GlassCard className="p-6">
           <h2 className="text-xl font-bold text-white mb-4">Plan des couloirs</h2>
+          <p className="text-sm text-white/60 mb-4">Clic droit pour ajouter • Glisser-déposer pour déplacer</p>
           <div className="overflow-auto bg-black/20 p-8 rounded-lg" style={{ minHeight: '600px' }}>
-            <div className="relative" style={{
-              width: `${(maxX - minX) * 80}px`,
-              height: `${(maxY - minY) * 80}px`,
-              minWidth: '1000px',
-              minHeight: '600px'
-            }}>
+            <div
+              className="relative"
+              style={{
+                width: `${(maxX - minX) * 80}px`,
+                height: `${(maxY - minY) * 80}px`,
+                minWidth: '1000px',
+                minHeight: '600px'
+              }}
+              onContextMenu={(e) => {
+                e.preventDefault();
+                const rect = e.currentTarget.getBoundingClientRect();
+                const x = Math.round((e.clientX - rect.left - 35) / 80) + minX;
+                const y = Math.round((e.clientY - rect.top - 35) / 80) + minY;
+
+                // Créer un bunker rapidement
+                const name = `BK-${x}-${y}`;
+                createBunker(params.id as string, x, y, 'vacant', name).then((result) => {
+                  if (result.success) {
+                    loadData();
+                  }
+                });
+              }}
+              onMouseMove={(e) => {
+                if (draggingBunker) {
+                  const rect = e.currentTarget.getBoundingClientRect();
+                  const newX = Math.round((e.clientX - rect.left - dragOffset.x) / 80) + minX;
+                  const newY = Math.round((e.clientY - rect.top - dragOffset.y) / 80) + minY;
+
+                  // Mettre à jour la position visuellement
+                  const element = document.getElementById(`bunker-${draggingBunker.id}`);
+                  if (element) {
+                    element.style.left = `${(newX - minX) * 80}px`;
+                    element.style.top = `${(newY - minY) * 80}px`;
+                  }
+                }
+              }}
+              onMouseUp={() => {
+                if (draggingBunker) {
+                  // Sauvegarder la nouvelle position
+                  const element = document.getElementById(`bunker-${draggingBunker.id}`);
+                  if (element) {
+                    const x = Math.round(parseInt(element.style.left) / 80) + minX;
+                    const y = Math.round(parseInt(element.style.top) / 80) + minY;
+
+                    updateBunker(draggingBunker.id, { x, y }).then(() => {
+                      loadData();
+                    });
+                  }
+                  setDraggingBunker(null);
+                }
+              }}
+            >
               {/* Grille de fond */}
-              <div className="absolute inset-0" style={{
+              <div className="absolute inset-0 pointer-events-none" style={{
                 backgroundImage: 'linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px)',
                 backgroundSize: '40px 40px'
               }} />
@@ -180,8 +229,24 @@ export default function CountryBunkerPage() {
               {bunkers.map((bunker) => (
                 <button
                   key={bunker.id}
-                  onClick={() => setSelectedBunker(bunker)}
-                  className="absolute flex flex-col items-center justify-center p-3 rounded-lg border-2 transition-all hover:scale-110 hover:z-10 cursor-pointer"
+                  id={`bunker-${bunker.id}`}
+                  onClick={(e) => {
+                    if (!draggingBunker) {
+                      e.stopPropagation();
+                      setSelectedBunker(bunker);
+                    }
+                  }}
+                  onMouseDown={(e) => {
+                    if (e.button === 0) { // Clic gauche uniquement
+                      const rect = e.currentTarget.getBoundingClientRect();
+                      setDragOffset({
+                        x: e.clientX - rect.left - 35,
+                        y: e.clientY - rect.top - 35
+                      });
+                      setDraggingBunker(bunker);
+                    }
+                  }}
+                  className="absolute flex flex-col items-center justify-center p-3 rounded-lg border-2 transition-all hover:scale-110 hover:z-10"
                   style={{
                     left: `${(bunker.x - minX) * 80}px`,
                     top: `${(bunker.y - minY) * 80}px`,
@@ -190,11 +255,12 @@ export default function CountryBunkerPage() {
                     backgroundColor: `${getStatusColor(bunker.status)}40`,
                     borderColor: getStatusColor(bunker.status),
                     boxShadow: `0 0 20px ${getStatusColor(bunker.status)}30`,
+                    cursor: draggingBunker?.id === bunker.id ? 'grabbing' : 'grab',
                   }}
                 >
-                  <div className="text-xs text-white/60 font-mono">({bunker.x},{bunker.y})</div>
-                  <div className="text-xs text-white font-semibold truncate w-full text-center mt-1">{bunker.name}</div>
-                  <div className="w-2 h-2 rounded-full mt-1" style={{ backgroundColor: getStatusColor(bunker.status) }} />
+                  <div className="text-xs text-white/60 font-mono pointer-events-none">({bunker.x},{bunker.y})</div>
+                  <div className="text-xs text-white font-semibold truncate w-full text-center mt-1 pointer-events-none">{bunker.name}</div>
+                  <div className="w-2 h-2 rounded-full mt-1 pointer-events-none" style={{ backgroundColor: getStatusColor(bunker.status) }} />
                 </button>
               ))}
             </div>
