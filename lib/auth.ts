@@ -120,6 +120,51 @@ export function getCurrentUser(): User | null {
   }
 }
 
+/**
+ * Rafraîchit le rôle de l'utilisateur depuis Supabase
+ * À appeler après une promotion ou au chargement de page
+ */
+export async function refreshUserRole(userId: string): Promise<User | null> {
+  try {
+    const { data, error } = await supabase
+      .from('users')
+      .select('*')
+      .eq('id', userId)
+      .single();
+
+    if (error || !data) {
+      console.error('Error refreshing user role:', error);
+      return null;
+    }
+
+    const updatedUser: User = {
+      id: data.id,
+      username: data.username,
+      email: data.email,
+      role: {
+        id: data.role_id,
+        name: data.role_name,
+        level: data.role_level,
+        color: data.role_color,
+        emoji: data.role_emoji,
+        description: data.role_description,
+        permissions: ROLES[data.role_id.toUpperCase() as keyof typeof ROLES]?.permissions || [],
+      },
+      countryId: data.country_id || undefined,
+    };
+
+    // Mettre à jour le localStorage
+    if (typeof window !== 'undefined') {
+      localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(updatedUser));
+    }
+
+    return updatedUser;
+  } catch (error) {
+    console.error('Error refreshing user role:', error);
+    return null;
+  }
+}
+
 export async function getAllUsers(): Promise<User[]> {
   try {
     const { data, error } = await supabase

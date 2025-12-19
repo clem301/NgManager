@@ -1,13 +1,14 @@
 'use client';
 
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { User, getCurrentUser, logout as authLogout } from '@/lib/auth';
+import { User, getCurrentUser, logout as authLogout, refreshUserRole } from '@/lib/auth';
 
 interface AuthContextType {
   user: User | null;
   loading: boolean;
   login: (user: User) => void;
   logout: () => void;
+  refreshUser: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -17,10 +18,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Charger l'utilisateur au montage
-    const currentUser = getCurrentUser();
-    setUser(currentUser);
-    setLoading(false);
+    // Charger l'utilisateur au montage et rafraîchir son rôle depuis Supabase
+    const loadUser = async () => {
+      const currentUser = getCurrentUser();
+      if (currentUser) {
+        // Rafraîchir le rôle depuis Supabase
+        const updatedUser = await refreshUserRole(currentUser.id);
+        setUser(updatedUser || currentUser);
+      } else {
+        setUser(null);
+      }
+      setLoading(false);
+    };
+
+    loadUser();
   }, []);
 
   const login = (user: User) => {
@@ -32,8 +43,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(null);
   };
 
+  const refreshUser = async () => {
+    if (user) {
+      const updatedUser = await refreshUserRole(user.id);
+      if (updatedUser) {
+        setUser(updatedUser);
+      }
+    }
+  };
+
   return (
-    <AuthContext.Provider value={{ user, loading, login, logout }}>
+    <AuthContext.Provider value={{ user, loading, login, logout, refreshUser }}>
       {children}
     </AuthContext.Provider>
   );
