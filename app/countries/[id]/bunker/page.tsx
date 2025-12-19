@@ -259,8 +259,8 @@ export default function CountryBunkerPage() {
                     if (e.button === 0) { // Clic gauche uniquement
                       setIsDragging(false);
                       setDragOffset({
-                        x: 35,
-                        y: 35
+                        x: 50,
+                        y: 50
                       });
                       setDraggingBunker(bunker);
                     }
@@ -269,8 +269,8 @@ export default function CountryBunkerPage() {
                   style={{
                     left: `${bunker.pos_x}px`,
                     top: `${bunker.pos_y}px`,
-                    width: '70px',
-                    height: '70px',
+                    width: '100px',
+                    height: '100px',
                     backgroundColor: `${getStatusColor(bunker.status)}40`,
                     borderColor: getStatusColor(bunker.status),
                     boxShadow: `0 0 20px ${getStatusColor(bunker.status)}30`,
@@ -279,8 +279,8 @@ export default function CountryBunkerPage() {
                     clipPath: bunker.type === 'member' ? 'polygon(50% 0%, 0% 100%, 100% 100%)' : 'none',
                   }}
                 >
-                  <div className="text-xs text-white font-semibold truncate w-full text-center pointer-events-none">{bunker.name}</div>
-                  <div className="w-2 h-2 rounded-full mt-1 pointer-events-none" style={{ backgroundColor: getStatusColor(bunker.status) }} />
+                  <div className="text-sm text-white font-semibold w-full text-center px-1 pointer-events-none" style={{ wordBreak: 'break-word' }}>{bunker.name}</div>
+                  <div className="w-2 h-2 rounded-full mt-2 pointer-events-none" style={{ backgroundColor: getStatusColor(bunker.status) }} />
                 </button>
               ))}
             </div>
