@@ -61,24 +61,6 @@ export default function DashboardPage() {
           </GlassButton>
         </div>
 
-        {/* Stats */}
-        <div className="grid md:grid-cols-3 gap-6">
-          <GlassCard className="p-6">
-            <h3 className="text-2xl font-bold mb-2">0</h3>
-            <p className="text-white/60 text-sm">Pays gérés</p>
-          </GlassCard>
-
-          <GlassCard className="p-6">
-            <h3 className="text-2xl font-bold mb-2">0</h3>
-            <p className="text-white/60 text-sm">Membres actifs</p>
-          </GlassCard>
-
-          <GlassCard className="p-6">
-            <h3 className="text-2xl font-bold mb-2">0</h3>
-            <p className="text-white/60 text-sm">Créations</p>
-          </GlassCard>
-        </div>
-
         {/* Quick Actions */}
         <div>
           <h2 className="text-2xl font-bold mb-6 gradient-text">Actions rapides</h2>
