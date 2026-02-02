@@ -1,19 +1,37 @@
 import React from 'react';
 
-interface GlassCardProps {
+interface CardProps {
   children: React.ReactNode;
   className?: string;
   hover?: boolean;
-  strong?: boolean;
+  padding?: 'none' | 'sm' | 'md' | 'lg';
 }
 
-export default function GlassCard({ children, className = '', hover = false, strong = false }: GlassCardProps) {
-  const baseClasses = strong ? 'glass-strong' : 'glass';
-  const hoverClasses = hover ? 'glass-hover cursor-pointer' : '';
+export default function GlassCard({ 
+  children, 
+  className = '', 
+  hover = false, 
+  padding = 'md'
+}: CardProps) {
+  const paddingClasses = {
+    none: '',
+    sm: 'p-4',
+    md: 'p-6',
+    lg: 'p-8',
+  };
 
   return (
-    <div className={`${baseClasses} ${hoverClasses} rounded-glass p-6 ${className}`}>
+    <div 
+      className={`
+        glass rounded-xl
+        ${hover ? 'glass-hover cursor-pointer' : ''} 
+        ${paddingClasses[padding]} 
+        ${className}
+      `}
+    >
       {children}
     </div>
   );
 }
+
+export { GlassCard as Card };

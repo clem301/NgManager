@@ -29,7 +29,6 @@ export default function DashboardPage() {
     setUserCountries(countries);
     setLoadingCountries(false);
 
-    // Si l'utilisateur a un pays, rediriger vers le premier pays
     if (countries.length > 0) {
       router.push(`/countries/${countries[0].id}`);
     }
@@ -37,8 +36,13 @@ export default function DashboardPage() {
 
   if (loading || loadingCountries) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-white/60">Chargement...</div>
+      <div className="min-h-screen flex items-center justify-center relative z-10">
+        <div className="text-center">
+          <div className="w-12 h-12 rounded-xl gradient-primary flex items-center justify-center mx-auto mb-4 animate-pulse-glow">
+            <span className="text-white text-xl font-bold">NG</span>
+          </div>
+          <p className="text-white/50">Chargement...</p>
+        </div>
       </div>
     );
   }
@@ -47,7 +51,6 @@ export default function DashboardPage() {
     return null;
   }
 
-  // Si aucun pays, rediriger vers la liste des pays
   if (userCountries.length === 0) {
     router.push('/countries');
     return null;

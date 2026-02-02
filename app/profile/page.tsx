@@ -6,6 +6,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import GlassCard from '@/components/ui/GlassCard';
 import GlassButton from '@/components/ui/GlassButton';
 import Badge from '@/components/ui/Badge';
+import Header from '@/components/layout/Header';
 import { RoleLevel } from '@/lib/roles';
 
 export default function ProfilePage() {
@@ -20,8 +21,13 @@ export default function ProfilePage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-white/60">Chargement...</div>
+      <div className="min-h-screen flex items-center justify-center relative z-10">
+        <div className="text-center">
+          <div className="w-12 h-12 rounded-xl gradient-primary flex items-center justify-center mx-auto mb-4 animate-pulse-glow">
+            <span className="text-white text-xl font-bold">NG</span>
+          </div>
+          <p className="text-white/50">Chargement...</p>
+        </div>
       </div>
     );
   }
@@ -36,80 +42,95 @@ export default function ProfilePage() {
   };
 
   return (
-    <div className="min-h-screen py-20 px-6">
-      <div className="max-w-6xl mx-auto space-y-8">
-        {/* Bouton retour */}
-        <button
-          onClick={() => router.push('/dashboard')}
-          className="flex items-center gap-2 text-white/60 hover:text-white transition-colors mb-4"
-        >
-          <span>←</span>
-          <span>Retour au pays</span>
-        </button>
+    <div className="min-h-screen relative z-10">
+      <Header />
+      
+      <div className="pt-[73px]">
+        <div className="max-w-2xl mx-auto px-6 py-8 space-y-6">
+          {/* Bouton retour */}
+          <button
+            onClick={() => router.push('/dashboard')}
+            className="text-white/40 hover:text-white transition-colors text-sm flex items-center gap-1"
+          >
+            <span>←</span>
+            <span>Retour au dashboard</span>
+          </button>
 
-        {/* Header avec glassmorphisme */}
-        <GlassCard className="p-8">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-5xl font-bold gradient-text mb-2">Profil</h1>
-              <div className="flex items-center gap-3">
-                <p className="text-white/60">Content de te revoir, {user.username} !</p>
-                <span
-                  className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold border"
-                  style={{
-                    backgroundColor: `${user.role.color}20`,
-                    borderColor: `${user.role.color}50`,
-                    color: user.role.color,
-                  }}
+          {/* Header */}
+          <GlassCard padding="lg">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <div className="w-16 h-16 rounded-2xl gradient-primary flex items-center justify-center shadow-glow">
+                  <span className="text-2xl font-bold text-white">
+                    {user.username.substring(0, 2).toUpperCase()}
+                  </span>
+                </div>
+                <div>
+                  <h1 className="text-2xl font-bold text-white">{user.username}</h1>
+                  <div className="flex items-center gap-2 mt-1">
+                    <Badge 
+                      variant={
+                        user.role.level === RoleLevel.FONDATEUR ? 'owner' :
+                        user.role.level === RoleLevel.STAFF ? 'staff' :
+                        user.role.level === RoleLevel.GOUVERNEUR ? 'admin' :
+                        'default'
+                      }
+                      dot
+                    >
+                      {user.role.name}
+                    </Badge>
+                  </div>
+                </div>
+              </div>
+              <GlassButton variant="ghost" onClick={handleLogout}>
+                Déconnexion
+              </GlassButton>
+            </div>
+          </GlassCard>
+
+          {/* Informations */}
+          <GlassCard padding="lg">
+            <h3 className="text-sm font-semibold text-white/40 uppercase tracking-wide mb-4">
+              Informations du compte
+            </h3>
+            <div className="space-y-4">
+              <div className="flex justify-between items-center py-2 border-b border-white/10">
+                <span className="text-white/50 text-sm">Nom d'utilisateur</span>
+                <span className="font-medium text-white">{user.username}</span>
+              </div>
+              <div className="flex justify-between items-center py-2 border-b border-white/10">
+                <span className="text-white/50 text-sm">Email</span>
+                <span className="font-medium text-white">{user.email}</span>
+              </div>
+              <div className="flex justify-between items-center py-2 border-b border-white/10">
+                <span className="text-white/50 text-sm">Grade</span>
+                <Badge 
+                  variant={
+                    user.role.level === RoleLevel.FONDATEUR ? 'owner' :
+                    user.role.level === RoleLevel.STAFF ? 'staff' :
+                    user.role.level === RoleLevel.GOUVERNEUR ? 'admin' :
+                    'default'
+                  }
+                  size="sm"
                 >
                   {user.role.name}
-                </span>
+                </Badge>
+              </div>
+              <div className="flex justify-between items-center py-2 border-b border-white/10">
+                <span className="text-white/50 text-sm">Niveau</span>
+                <span className="font-medium text-white">{user.role.level}</span>
+              </div>
+              <div className="flex justify-between items-center py-2">
+                <span className="text-white/50 text-sm">ID</span>
+                <span className="font-mono text-xs text-white/40">{user.id}</span>
               </div>
             </div>
-            <GlassButton variant="secondary" onClick={handleLogout}>
-              Déconnexion
-            </GlassButton>
-          </div>
-        </GlassCard>
-
-        {/* User Info */}
-        <GlassCard className="p-6">
-          <h3 className="text-lg font-bold mb-4">Informations du compte</h3>
-          <div className="space-y-3 text-white/70">
-            <div className="flex justify-between items-center">
-              <span>Nom d&apos;utilisateur :</span>
-              <span className="text-white font-semibold">{user.username}</span>
+            
+            <div className="mt-6 p-4 bg-white/5 rounded-xl">
+              <p className="text-sm text-white/50 italic">{user.role.description}</p>
             </div>
-            <div className="flex justify-between items-center">
-              <span>Email :</span>
-              <span className="text-white font-semibold">{user.email}</span>
-            </div>
-            <div className="flex justify-between items-center">
-              <span>Grade :</span>
-              <span
-                className="inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold border"
-                style={{
-                  backgroundColor: `${user.role.color}20`,
-                  borderColor: `${user.role.color}50`,
-                  color: user.role.color,
-                }}
-              >
-                {user.role.name}
-              </span>
-            </div>
-            <div className="flex justify-between items-center">
-              <span>Niveau :</span>
-              <span className="text-white font-semibold">{user.role.level}</span>
-            </div>
-            <div className="flex justify-between items-center">
-              <span>ID :</span>
-              <span className="text-white/40 font-mono text-sm">{user.id}</span>
-            </div>
-          </div>
-          <div className="mt-4 pt-4 border-t border-white/10">
-            <p className="text-sm text-white/60 italic">{user.role.description}</p>
-          </div>
-        </GlassCard>
+          </GlassCard>
+        </div>
       </div>
     </div>
   );

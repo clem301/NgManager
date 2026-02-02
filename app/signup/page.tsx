@@ -38,7 +38,6 @@ export default function SignupPage() {
     const result = await register(username, email, password);
 
     if (result.success) {
-      // Auto-login après inscription
       const loginResult = await login(email, password);
       if (loginResult.success && loginResult.user) {
         setUser(loginResult.user);
@@ -51,107 +50,103 @@ export default function SignupPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center py-20 px-6">
-      <div className="max-w-md w-full space-y-8">
+    <div className="min-h-screen flex items-center justify-center py-12 px-6 relative z-10">
+      <div className="max-w-md w-full space-y-8 animate-fadeUp">
+        {/* Header */}
         <div className="text-center">
           <Link href="/" className="inline-block">
-            <div className="w-24 h-24 rounded-glass-lg bg-white/10 flex items-center justify-center mx-auto shadow-glow mb-6">
-              <span className="text-5xl font-bold">NG</span>
+            <div className="w-16 h-16 rounded-2xl gradient-primary flex items-center justify-center mx-auto shadow-glow mb-6">
+              <span className="text-2xl font-bold text-white">NG</span>
             </div>
           </Link>
-          <h1 className="text-4xl font-bold mb-2 gradient-text">Bienvenue ! 🎉</h1>
-          <p className="text-white/60">Rejoins l&apos;aventure NG Manager</p>
+          <h1 className="text-3xl font-bold text-white mb-2">
+            Bienvenue
+          </h1>
+          <p className="text-white/50">Rejoins l'aventure NG Manager</p>
         </div>
 
-        <GlassCard className="p-8">
-          <form className="space-y-6" onSubmit={handleSubmit}>
+        {/* Form Card */}
+        <GlassCard padding="lg">
+          <form className="space-y-5" onSubmit={handleSubmit}>
             {error && (
-              <div className="p-3 rounded-glass bg-red-500/20 border border-red-500/30 text-red-200 text-sm">
+              <div className="p-3 rounded-xl bg-red-500/20 border border-red-500/30 text-red-400 text-sm">
                 {error}
               </div>
             )}
 
-            <div>
-              <label htmlFor="username" className="block text-sm font-medium text-white/80 mb-2">
-                Nom d&apos;utilisateur
-              </label>
-              <GlassInput
-                id="username"
-                type="text"
-                placeholder="JohnDoe"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                required
+            <GlassInput
+              id="username"
+              label="Nom d'utilisateur"
+              type="text"
+              placeholder="JohnDoe"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              required
+            />
+
+            <GlassInput
+              id="email"
+              label="Email"
+              type="email"
+              placeholder="votre@email.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+
+            <GlassInput
+              id="password"
+              label="Mot de passe"
+              type="password"
+              placeholder="••••••••"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              hint="Minimum 6 caractères"
+            />
+
+            <GlassInput
+              id="confirmPassword"
+              label="Confirmer le mot de passe"
+              type="password"
+              placeholder="••••••••"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              required
+            />
+
+            <div className="flex items-start gap-2">
+              <input 
+                type="checkbox" 
+                id="terms" 
+                required 
+                className="mt-1 w-4 h-4 rounded bg-white/10 border-white/20 text-primary focus:ring-primary"
               />
-            </div>
-
-            <div>
-              <label htmlFor="email" className="block text-sm font-medium text-white/80 mb-2">
-                Email
-              </label>
-              <GlassInput
-                id="email"
-                type="email"
-                placeholder="votre@email.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
-            </div>
-
-            <div>
-              <label htmlFor="password" className="block text-sm font-medium text-white/80 mb-2">
-                Mot de passe
-              </label>
-              <GlassInput
-                id="password"
-                type="password"
-                placeholder="••••••••"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
-            </div>
-
-            <div>
-              <label htmlFor="confirmPassword" className="block text-sm font-medium text-white/80 mb-2">
-                Confirmer le mot de passe
-              </label>
-              <GlassInput
-                id="confirmPassword"
-                type="password"
-                placeholder="••••••••"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                required
-              />
-            </div>
-
-            <div className="flex items-start">
-              <input type="checkbox" id="terms" className="mt-1 mr-2" required />
-              <label htmlFor="terms" className="text-sm text-white/60">
-                J&apos;accepte les CGU (ouais, comme tout le monde quoi)
+              <label htmlFor="terms" className="text-sm text-white/50">
+                J'accepte les conditions d'utilisation
               </label>
             </div>
 
-            <GlassButton variant="primary" className="w-full" type="submit" disabled={loading}>
-              {loading ? 'Création...' : 'C\'est parti ! 🚀'}
+            <GlassButton variant="primary" fullWidth type="submit" disabled={loading}>
+              {loading ? 'Création...' : 'Créer mon compte'}
             </GlassButton>
           </form>
 
           <div className="mt-6 text-center">
-            <p className="text-white/60 text-sm">
+            <p className="text-white/50 text-sm">
               Déjà inscrit ?{' '}
-              <Link href="/login" className="text-white font-semibold hover:underline">
-                Connecte-toi par ici
+              <Link href="/login" className="text-primary font-medium hover:underline">
+                Connecte-toi
               </Link>
             </p>
           </div>
         </GlassCard>
 
+        {/* Back link */}
         <div className="text-center">
-          <Link href="/" className="text-white/60 text-sm hover:text-white transition-colors">
-            ← Retour à l&apos;accueil
+          <Link href="/" className="text-white/40 text-sm hover:text-white transition-colors inline-flex items-center gap-2">
+            <span>←</span>
+            <span>Retour à l'accueil</span>
           </Link>
         </div>
       </div>

@@ -9,29 +9,36 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        dark: {
-          DEFAULT: '#0a0a0f',
-          surface: '#1a1a24',
-          border: 'rgba(255, 255, 255, 0.1)',
+        bg: {
+          DEFAULT: '#0f0f14',
+          light: '#1a1a24',
+          card: 'rgba(26, 26, 36, 0.6)',
+        },
+        border: {
+          DEFAULT: 'rgba(255, 255, 255, 0.08)',
+          hover: 'rgba(255, 255, 255, 0.15)',
+        },
+        primary: {
+          DEFAULT: '#e879f9',
+          dark: '#c026d3',
+          light: '#f0abfc',
+        },
+        accent: {
+          DEFAULT: '#f97316',
+          light: '#fb923c',
         },
       },
       fontFamily: {
-        sans: ['var(--font-exo)', 'Inter', 'system-ui', 'sans-serif'],
-      },
-      backdropBlur: {
-        glass: '20px',
-      },
-      backgroundImage: {
-        'glass-gradient': 'linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05))',
+        sans: ['Inter', 'system-ui', 'sans-serif'],
       },
       boxShadow: {
-        'glass': '0 8px 32px 0 rgba(0, 0, 0, 0.37)',
-        'glow': '0 0 20px rgba(255, 255, 255, 0.1)',
-        'glow-strong': '0 0 30px rgba(255, 255, 255, 0.2)',
+        'glow': '0 0 30px rgba(232, 121, 249, 0.3)',
+        'glow-strong': '0 0 50px rgba(232, 121, 249, 0.5)',
+        'glow-orange': '0 0 30px rgba(249, 115, 22, 0.3)',
       },
       borderRadius: {
-        'glass': '16px',
-        'glass-lg': '24px',
+        'xl': '16px',
+        '2xl': '20px',
       },
     },
   },
